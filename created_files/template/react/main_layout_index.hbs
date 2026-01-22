@@ -1,0 +1,24 @@
+import React, { useContext, useEffect, useState } from "react";
+import { ScreenWidthContext } from "../../routes/index";
+import DefaultLayout from "../../layouts/defaultlayout/index";
+
+const {{{LayoutTitle}}} = () => {
+  const screenWidth = useContext(ScreenWidthContext);
+  const [DesktopSkeleton, setDesktopSkeleton] = useState(null);
+  const [MobileSkeleton, setMobileSkeleton] = useState(null);
+
+  useEffect(() => {
+    
+    {{{importDesktopLayout}}}
+    {{{importMobileLayout}}}
+    
+  }, []);
+
+  if (screenWidth >= 800) {
+    return DesktopSkeleton ? <DesktopSkeleton /> : <DefaultLayout />;
+  } else {
+    return MobileSkeleton ? <MobileSkeleton /> : <DefaultLayout />;
+  }
+};
+
+export default {{LayoutTitle}};

@@ -1,0 +1,267 @@
+import React, { useEffect, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { ApiUtils, UIUtils, NavigationUtils } from "../../utils/actionUtils";
+import componentsMap from "../../../qlib/componentsMap";
+import { useLocation } from "react-router-dom";
+import { renderComponent } from "../../../qlib/renderComponent";
+import { Outlet } from "react-router-dom";
+import { QFormSubmit, QFormSubmitApiCall } from "../../../qlib/qform/QFormSubmit";
+import { useModal } from "../../../qlib/qmodal/QModalProvider";
+import { getStorage } from "../../../store/localStorage/storageConfig"
+import { resolveUpdatedFormValues } from "../../utils/helper"
+
+
+const {
+  QFullWidth,
+  QRow,
+  QDiv,
+  QParagraph,
+  QTextH6,
+  QTextH5,
+  QTextH4,
+  QTextH3,
+  QTextH2,
+  QTextH1,
+  QImage,
+  QButton,
+  QParallax,
+  QMarquee,
+  QStack,
+  QIncrementCounter,
+  QSlider,
+  QAccordion,
+  QAccordionItem,
+  QAccordionBody,
+  QWrap,
+  QHorizontalParallax,
+  QTabBar,
+  QTab,
+  QTabBody,
+  QTabHeader,
+  QFloatingButton,
+  QDrawer,
+  QDrawerBody,
+  QStickyHeader,
+  QHeaderBar,
+  QForm,
+  QFormInputElement,
+  QInputText,
+  QTextArea,
+  QNSection,
+  QMenuBar,
+  QHMenuItem,
+  QMenu,
+  QSubMenu,
+  QInputEmail,
+  QInputNumber,
+  QRadio,
+  QCheckBox,
+  QDropDown,
+  QTableData,
+  QTableWrapper,
+  QRepeat,
+  QTableSearch,
+  QInputSearch,
+  QIcon,
+  QTablePagination,
+  QTablePaginationButton,
+  QPageIndicator,
+  QTablePaginationInfo,
+  QTablePaginationRPP,
+  QTableSort,
+  QTableFilter,
+  QMap,
+  QBottomMenu,
+  QFlex,
+  QVideo,
+  QSection,
+  QNavbar,
+  QCustom,
+  QGallery,
+  QMasonary,
+  QProgressbarWithPercentage,
+  QProgressbarWithStepper,
+  QDashedProgressbar,
+  QProgressbarWithSlider,
+  QBackDrop,
+  QCarousel,
+  QErrorMessage,
+  QDatePicker,
+  QTimePicker,
+  QDateRangePicker,
+   QTable,
+  QColumnHeaders,
+  QColumnHeader,
+  QTableRows,
+  QTableRow,
+  QTableCell,
+  QMultiSelectDropdown,
+  QActionFlow,
+  QModalContainer,
+   QColumnChart,
+  QAreaChart,
+  QLineChart,
+  QBarChart,
+  QPieChart
+} = componentsMap;
+
+
+export const DefaultLayout = ({setupSceneCalling, sceneValuePassToPage, receivedValueFromPage}) => {
+  const [jsxComponents, setJsxComponents] = useState([]);
+  const location = useLocation();
+  const lastSegment = location.pathname.split("/").filter(Boolean).pop();
+  const [openMenus, setOpenMenus] = useState({});
+  const [hoverTimeouts, setHoverTimeouts] = useState({});
+  const [loading, setLoading] = useState(false);
+  const { openModal, closeModal  } = useModal();
+  const storageInstance =  getStorage();
+ 
+  
+//Force component to re-render on store change manually
+const [, forceUpdate] = useState(0);
+
+
+
+  useEffect(() => {
+    Object.values(hoverTimeouts).forEach(clearTimeout);
+    return () => {
+      Object.values(hoverTimeouts).forEach(clearTimeout);
+    };
+  }, [hoverTimeouts]);
+
+  useEffect(() => {
+    setOpenMenus({});
+  }, [lastSegment]);
+
+  const handleMouseEnter = (menuId, parentIds = []) => {
+    setOpenMenus((prev) => {
+      let newMenus = { ...prev, [menuId]: true };
+      // Ensure all parent menus in the array remain open
+      parentIds.forEach((parent) => {
+        newMenus[parent] = true;
+      });
+
+      const timeout = setTimeout(() => {
+        // Close only sibling menus (menus at the same level)
+        Object.keys(prev).forEach((key) => {
+          if (key !== menuId && !parentIds.includes(key)) {
+            delete newMenus[key];
+          }
+        });
+      }, 1500);
+
+      return newMenus;
+    });
+  };
+
+  const handleMouseLeave = (menuId) => {
+    // Set a timeout to close the menu with a delay (prevents flickering)
+    const timeout = setTimeout(() => {
+      setOpenMenus((prev) => {
+        const updatedMenus = { ...prev };
+        delete updatedMenus[menuId]; // Close only this menu
+        return updatedMenus;
+      });
+    }, 1500);
+
+    setHoverTimeouts((prev) => ({
+      ...prev,
+      [menuId]: timeout,
+    }));
+  };
+
+  // CLOSE ALL MENUS WHEN MOVING TO A NEW TOP-LEVEL MENU
+  const handleTopMenuEnter = (menuId) => {
+    // Clear all open submenus except the one being hovered
+    setOpenMenus({});
+    // Clear any timeout preventing closure
+    if (hoverTimeouts[menuId]) {
+      clearTimeout(hoverTimeouts[menuId]);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      // Cleanup all timeouts when component unmounts
+      Object.values(hoverTimeouts).forEach(clearTimeout);
+    };
+  }, [hoverTimeouts]);
+
+  useEffect(() => {
+    let jsxStructure;
+  
+    jsxStructure = (
+     
+        <QCustom>
+          <>
+            {{!-- <main> --}}
+              <Outlet /> {/* child route content renders here */}
+            {{!-- </main> --}}
+          </>
+        </QCustom>
+     
+    );
+
+    // Extract the props from the JSX and store them in a variable (not rendering SCO)
+    let remainingComponents = [];
+    React.Children.forEach(jsxStructure.props.children, (child) => {
+        remainingComponents.push(child); // Store other components
+    });
+    // Update state with extracted data
+    setJsxComponents(remainingComponents); // Store other components
+  }, []);
+
+  // Helper function to parse JSX into a UI Schema (for rendering)
+  const parseJSXToUISchema = (element) => {
+    if (!React.isValidElement(element)) return null;
+
+    const { type, props } = element;
+    const componentName =
+      typeof type === "string"
+        ? type
+        : type.displayName || type.name || "UnknownComponent";
+
+    const children = [];
+
+    React.Children.forEach(props.children, (child) => {
+      if (typeof child === "string" || typeof child === "number") {
+        // ✅ Preserve plain text children like "hi"
+        children.push(child);
+      } else {
+        const parsed = parseJSXToUISchema(child);
+        if (parsed) children.push(parsed);
+      }
+    });
+
+    const uiSchemaNode = {
+      type: componentName,
+      props: { ...props },
+    };
+
+    if (children.length > 0) {
+      uiSchemaNode.children = children;
+    }
+
+    // ✅ Don't delete children from props, keep as fallback
+    return uiSchemaNode;
+  };
+
+  // Generate UI schema for rendering other components
+  const uiSchema =
+    jsxComponents && jsxComponents.length > 0
+      ? jsxComponents.map(parseJSXToUISchema)
+      : [];
+
+  return (
+    <>
+      {Array.isArray(uiSchema) &&
+        uiSchema.map((component, index) => (
+          <React.Fragment key={index}>
+            {renderComponent(component)}
+          </React.Fragment>
+        ))}
+    </>
+  );
+};
+
+export default DefaultLayout;

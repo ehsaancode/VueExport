@@ -1,0 +1,127 @@
+
+.time-picker {
+  width: 320px;
+  height: 225px;
+  padding: 16px;
+  border-radius: 12px;
+  background: #a60000;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.time-picker h3 {
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+.time-input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.time-box {
+  height: 60px;
+  background: #bb86fc;
+  color: #00ffff;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 60px;
+  border-radius: 8px;
+}
+
+.colon {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.ampm-toggle {
+  display: flex;
+  margin-left: 12px;
+  flex-direction: column;
+}
+
+.ampm-toggle button {
+  padding: 8px 16px;
+  border: none;
+  cursor: pointer;
+  background: #333;
+  color: white;
+}
+
+.ampm-toggle .active {
+  background: teal;
+}
+
+.clock-face {
+  display: block;
+  margin: 0 auto;
+  background: transparent;
+  border-radius: 50%;
+}
+
+.footer {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: white;
+}
+
+.cancel-btn {
+  background: #f44336;
+  border: none;
+  padding: 6px 12px;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+    font-size: 10px;
+}
+
+.ok-btn {
+  background: #1976d2;
+  border: none;
+  padding: 6px 12px;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 10px;
+}
+
+.selectedClock{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.ampm-toggleS button {
+  padding: 5px 41px;
+  border: none;
+  cursor: pointer;
+  background: #333;
+  color: white;
+  margin-top: 7px;
+  font-size: 10px;
+  border-radius: 2px;
+}
+
+
+.ampm-toggleS {
+  display: flex;
+  flex-direction: row;
+}
+
+
+.ampm-toggleS .active {
+  background: teal;
+}

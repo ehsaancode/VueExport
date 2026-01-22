@@ -1,0 +1,40 @@
+//
+//  HomeService.swift
+//  cms_design_ios
+//
+//  Created by Sayan Mondal on 26/05/25.
+//
+
+import Foundation
+
+struct [class_name]Resource: APIResource {
+    var request: HTTPRequest
+    
+    func decode(_ data: Data) throws -> [String: Any] {
+        do {
+            let jsonObject = try JSONSerialization.jsonObject(with: data, options: [])
+            guard let dictionary = jsonObject as? [String: Any] else {
+                throw NetworkError.invalidResponse
+            }
+            return dictionary
+        } catch {
+            print("Decoding error: \(error)")
+            throw NetworkError.invalidResponse
+        }
+    }
+}
+
+class [class_name]Service {
+    func getTableData() async throws -> [String: Any] {
+        let request = HTTPRequest(
+            url: [URL],
+            method: [Method],
+            body: [:],
+            formBody: [formBody],
+            headerValues: [Header] // Ensure correct Content-Type
+        )
+        let resource = HomeResource(request: request)
+        let apiRequest = APIRequest(request: resource)
+        return try await apiRequest.execute()
+    }
+}

@@ -1,0 +1,49 @@
+import React, { useState } from "react";
+import { ApiUtils, UIUtils, NavigationUtils } from "../../../utils/actionUtils";
+import componentsMap from "../../../qlib/componentsMap";
+import { useLocation } from "react-router-dom";
+import { renderComponent } from "../../../qlib/renderComponent";
+import { get, setFormErrorSet, set, subscribe } from "../../../store/index";
+import { getStorage } from "../../../store/localStorage/storageConfig"
+
+{{#each importScenes}}
+import {{{this.sceneName}}} from "./{{{this.sceneName}}}";
+{{/each}}
+
+const { QActionFlow } = componentsMap;
+
+export const {{{pageName}}} = () => {
+  const [scene, setScene] = useState("{{{currentSceneName}}}");
+  const [passSceneValue, setPassSceneValue] = useState();
+
+  [page_states]
+
+   const setupScene = (scene) => {
+    setScene(scene);
+  };
+
+   const receivedSceneValue = (value, method) => {
+    setScene(scene);
+    setPassSceneValue(value);
+  };
+
+  
+
+  return (
+    <>
+      {
+        {{#each scenes}}
+        scene === "{{{this.sceneName}}}" ? (
+          <{{{this.sceneName}}} setupSceneCalling={setupScene}
+          sceneValuePassToPage={receivedSceneValue}
+          receivedValueFromPage={passSceneValue}  />
+        ) :
+        {{/each}}
+       (
+        <></>
+      )}
+    </>
+  );
+};
+
+export default {{{pageName}}};

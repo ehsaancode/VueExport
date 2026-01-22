@@ -1,0 +1,376 @@
+.date-range-wrapper {
+  background: #121212;
+  color: white;
+  font-family: sans-serif;
+  width: 380px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  height: 520px;
+  overflow: hidden;
+}
+
+/* Top Header */
+.header {
+  background: #d50000;
+  color: white;
+
+}
+
+.header .title {
+  padding-left: 60px;
+  flex-grow: 1;
+  align-items: center;
+  background: #d50000;
+  color: white;
+  padding-left: 60px;
+  padding-bottom: 20px;
+}
+
+.header .subtitle {
+  font-size: 14px;
+  margin: 0;
+  opacity: 0.7;
+  padding-bottom: 7px
+}
+
+.header h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.close-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+.saveEdit {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.has-tooltip { position: relative; overflow: visible; }
+.has-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 8px);           /* show below */
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--tooltip-bg);
+  color: var(--tooltip-fg);
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+  z-index: 9999;
+}
+
+.has-tooltip:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-2px);
+}
+
+.editRangeDateFooter, 
+.date-range-wrapper {
+  overflow: visible !important;
+}
+
+
+.save-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+/* Calendar container */
+.calendar-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: #1c1c1c;
+  overflow: hidden;
+}
+
+/* Root container of DayPicker */
+.rdp {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  /* centers everything horizontally */
+  width: 100%;
+}
+
+
+
+.topHeader{
+      padding: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+
+
+
+
+
+/* Weekday header columns — fixed width */
+.weekday-header {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* each column takes equal space */
+  text-align: center;
+  padding: 12px 0;
+  background: #1c1c1c;
+  border-bottom: 1px solid #333;
+  margin: 0 auto;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: 100%;          /* stretch full */
+  padding-right: 16px;
+  font-size: 12px;
+}
+
+/* Match day cell size with weekday header */
+.rdp-table {
+  border-collapse: collapse;
+  margin: 0 auto;
+}
+
+.rdp-cell,
+.rdp-day {
+  width: 55px;   /* ✅ same as header column */
+  height: 50px;  /* optional: square look */
+  text-align: center;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+
+
+
+.rdp-month_caption{
+  padding-left: 10px;
+}
+
+
+
+/* Scrollable months */
+.calendar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #555 #1c1c1c;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* keeps months centered */
+}
+
+/* Custom scrollbar for Webkit */
+.calendar-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.calendar-scroll::-webkit-scrollbar-track {
+  background: #1c1c1c;
+}
+.calendar-scroll::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 3px;
+}
+
+/* ===================*
+   Hide built-in RDP headers and nav
+*/
+.rdp-head,
+.rdp-weekdays {
+  display: none !important;
+}
+
+.rdp-nav,
+.rdp-caption {
+  display: none !important;
+}
+
+/* Months layout */
+.rdp-months {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* center all months */
+  width: 100%;
+  max-width: none !important;
+}
+
+.rdp-month {
+  max-width: none !important;   /* same width as weekday-header */
+  width: 100%;
+  margin: 0 auto;
+}
+
+
+/* Calendar grid spacing */
+.rdp-month_grid {
+  border-collapse: separate !important;
+  border-spacing: 0 6px !important; /* vertical gap */
+}
+
+/* Range Middle */
+.rdp-range_middle {
+  background: #5d2a2a !important;
+  color: white !important;
+  border-radius: 0 !important;
+}
+
+/* Range Start (only when part of a range) */
+.rdp-range_start:not(.rdp-range_end) {
+  background: #5d2a2a !important;
+  border-top-left-radius: 200% !important;
+  border-bottom-left-radius: 200% !important;
+  color: white !important;
+}
+
+/* Range End (only when part of a range) */
+.rdp-range_end:not(.rdp-range_start) {
+  background: #5d2a2a !important;
+  border-top-right-radius: 200% !important;
+  border-bottom-right-radius: 200% !important;
+  color: white !important;
+  width: 0%;
+  
+}
+
+.editDateRange {
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+
+
+
+/* Input mode styles */
+.input-mode-container {
+  padding-top: 24px;
+}
+
+.input-fields {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.input-group {
+  position: relative;
+  width: 80px;
+}
+
+.input-group label {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: white;
+  pointer-events: none;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  font-weight: bold;
+
+}
+
+.input-group.focused label,
+.input-group input:not(:placeholder-shown) + label {
+  top: -2px;
+  left: 8px;
+  font-size: 12px;
+  background-color: #121212;
+  padding: 0 4px;
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: #d32f2f;
+}
+
+/* Target placeholder inside .input-group input */
+.input-group input::placeholder {
+  font-weight: bold;
+  font-size: 14px;   /* change as you like */
+  color: white;       /* optional: placeholder color */
+}
+
+.editRangeDateFooter{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+
+.cancel-btn {
+  background: #f44336;
+  border: none;
+  padding: 6px 12px;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+    font-size: 10px;
+}
+
+.ok-btn {
+  background: #1976d2;
+  border: none;
+  padding: 6px 12px;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 10px;
+  margin-left: 30px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

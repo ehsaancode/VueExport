@@ -1,0 +1,28 @@
+@theme {
+     {{{breakpointsCommand}}}
+     {{#each breakpoints}}
+     --{{breakpointVariable}}: {{breakpointValue}};
+     {{/each}}
+}
+
+:root {
+     {{#each themeCategorys}}
+     {{{themeCategoryCommand}}}
+     {{#each themes}}
+     --{{themeVariable}}: {{themeValue}};
+     {{/each}}
+     
+     {{/each}}
+}
+
+[data-theme="light"] {
+     {{#each lightColors}}
+     --{{colorVariable}}: {{lightColorValue}};
+     {{/each}}
+}
+
+[data-theme="dark"] {
+     {{#each darkColors}}
+     --{{colorVariable}}: {{darkColorValue}};
+     {{/each}}
+}

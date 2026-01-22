@@ -1,0 +1,147 @@
+import React from "react";
+import PropTypes from "prop-types";
+
+const QLabel = ({
+  text,
+  style,
+  maxLines,
+  textDirection,
+  textAlign,
+  overflow,
+  fontSize,
+  fontWeight,
+  alignment,
+  decoration,
+  fontFamily,
+  fontStyle,
+  isAnimationplayed,
+  width,
+  height,
+  padding,
+  paddingLeft,
+  paddingTop,
+  paddingRight,
+  paddingBottom,
+  margin,
+  marginLeft,
+  marginTop,
+  marginRight,
+  marginBottom,
+  color,
+  bgColor,
+  borderRadius,
+  borderColor,
+  borderWidth,
+  bgUrl,
+  isImageFill,
+  shadowBlurRadius,
+  shadowColor,
+  shadowOffsetX,
+  shadowOffsetY,
+  shadowSpreadRadius,
+  positionedLeft,
+  positionedTop,
+  positionedRight,
+  positionedBottom,
+  widthType,
+  heightType,
+   tailwaindClasses,
+  boxShadow,
+  foreground,
+}) => {
+
+   // Handle bgColor as solid, linear, or radial gradient
+  let effectiveBgColor = "transparent";
+  let effectiveBgImage = "";
+
+  if (bgColor) {
+    if (bgColor.trim().startsWith("linear-gradient(") || bgColor.trim().startsWith("radial-gradient(")) {
+      effectiveBgImage = bgColor;
+    } else {
+      effectiveBgColor = bgColor;
+    }
+  }
+
+  // Handle background image URL
+  if (bgUrl && bgUrl !== "undefined" && bgUrl !== undefined) {
+    const imgUrl = `url(${bgUrl})`;
+    effectiveBgImage = effectiveBgImage ? `${imgUrl}, ${effectiveBgImage}` : imgUrl;
+  }
+
+  const labelStyle = {
+    width: width,
+    height: height,
+    color: color,
+    // backgroundColor: bgColor,
+    // ...(bgUrl && bgUrl !== "undefined" && bgUrl !== undefined && {
+    //   backgroundImage: `url(${bgUrl})`,
+    // }),
+    backgroundColor: effectiveBgColor,
+    backgroundImage: effectiveBgImage || undefined,
+    boxShadow: boxShadow,
+    textAlign,
+    textOverflow: overflow,
+    whiteSpace: maxLines === 1 ? "nowrap" : "normal",
+    overflow: maxLines ? "hidden" : "visible",
+    display: maxLines ? "-webkit-box" : "block",
+   ...(foreground
+      ? {
+          background: foreground,
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+        }
+      : {}),
+   
+  };
+
+  return <span className={`${tailwaindClasses}`} style={labelStyle}>{text}</span>;
+};
+
+QLabel.propTypes = {
+  text: PropTypes.string.isRequired,
+  style: PropTypes.object,
+  maxLines: PropTypes.number,
+  textDirection: PropTypes.oneOf(["ltr", "rtl", "auto"]),
+  textAlign: PropTypes.oneOf(["left", "center", "right", "justify", "start", "end"]),
+  overflow: PropTypes.oneOf(["visible", "hidden", "scroll", "auto", "clip", "ellipsis"]),
+  fontSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  fontWeight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  alignment: PropTypes.string,
+  decoration: PropTypes.oneOf(["none", "underline", "line-through", "overline"]),
+  fontFamily: PropTypes.string,
+  fontStyle: PropTypes.oneOf(["normal", "italic", "oblique"]),
+  isAnimationplayed: PropTypes.bool,
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  padding: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  paddingLeft: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  paddingTop: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  paddingRight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  paddingBottom: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  margin: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  marginLeft: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  marginTop: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  marginRight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  marginBottom: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  color: PropTypes.string,
+  bgColor: PropTypes.string,
+  borderRadius: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  borderColor: PropTypes.string,
+  borderWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  bgUrl: PropTypes.string,
+  isImageFill: PropTypes.bool,
+  shadowBlurRadius: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  shadowColor: PropTypes.string,
+  shadowOffsetX: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  shadowOffsetY: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  shadowSpreadRadius: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  positionedLeft: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  positionedTop: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  positionedRight: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  positionedBottom: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  widthType: PropTypes.oneOf(["auto", "fixed"]),
+  heightType: PropTypes.oneOf(["auto", "fixed"]),
+};
+
+export default QLabel;
+QLabel.displayName = 'QLabel';

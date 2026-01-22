@@ -1,0 +1,302 @@
+
+
+/* ---------- Theme for all tooltips ---------- */
+:root {
+  --tooltip-bg: #ededed;   /* one place to change */
+  --tooltip-fg: #242323;   /* one place to change */
+}
+
+/* ---------- Wrapper Layout ---------- */
+.datepicker-wrapper {
+  display: flex;
+  width: 500px;               /* room for 200 + calendar */
+  border-radius: 16px;
+  background: var(--calendar-bg);
+  color: var(--calendar-text);
+  font-family: Arial, sans-serif;
+  /* allow tooltips to overflow outside */
+  overflow: visible;
+  position: relative;
+}
+
+.datepicker-left {
+  width: 170px;
+  min-width: 150px;
+  padding: 16px;
+  box-sizing: border-box;
+  border-right: 1px solid #ddd;
+}
+.datepicker-left p { margin: 0 0 10px; font-size: 14px; }
+.datepicker-left h2 { margin: 0; font-size: 24px; }
+.datepicker-left h3 { margin: 5px 0 0; font-size: 35px; }
+
+.datepicker-right {
+  flex: 1;
+  min-width: 260px;
+  padding-top: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: visible; /* for header tooltips */
+}
+
+/* ---------- Custom Header ---------- */
+.custom-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 8px;
+  overflow: visible; /* prevents tooltip clipping */
+  user-select: none;
+}
+
+/* ---------- Calendar Content + Footer ---------- */
+.calendar-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+.calendar-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 10px 16px;
+  margin-top: auto;
+}
+.calendar-content.year-mode,
+.calendar-footer.year-mode {
+  border-top: 1px solid #fff;
+}
+
+/* Footer buttons */
+.cancel-btn,
+.ok-btn {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  background: none;
+  color: var(--calendar-active-bg);
+  transition: background .2s, color .2s;
+}
+
+.react-datepicker__day-name {
+  color: var(--calendar-text) !important;  /* use dynamic text color */
+}
+
+.cancel-btn:hover,
+.ok-btn:hover { background: #f2efef; }
+
+/* ---------- react-datepicker base overrides ---------- */
+.custom-calendar { background: var(--calendar-bg); border: none !important;   color: var(--calendar-text); }
+.react-datepicker__header { display: none !important; border-bottom: none !important; }
+.react-datepicker__month-container { border: none !important; }
+
+.react-datepicker__day-names { text-align: center; }
+.react-datepicker__day-name,
+.react-datepicker__day,
+.react-datepicker__time-name { width: 1.9rem; }
+
+.react-datepicker__day {
+  color: var(--calendar-text);
+  border-radius: 50% !important;
+  width: 32px; height: 32px; line-height: 32px;
+  margin: 2px; cursor: pointer;
+}
+.react-datepicker__day:hover { background: rgba(255,255,255,.2) !important; }
+.react-datepicker__day--selected { background: var(--calendar-active-bg);  color: var(--calendar-active-text); font-weight: bold; }
+.react-datepicker__day--outside-month { visibility: hidden; }
+
+/* hide default prev/next */
+.react-datepicker__navigation--previous,
+.react-datepicker__navigation--next { display: none !important; }
+
+/* ---------- Year grid ---------- */
+.year-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  padding: 20px;
+}
+.year-cell {
+  text-align: center;
+  padding: 16px;
+  border-radius: 20px;
+  color: var(--calendar-text);
+  cursor: pointer;
+  transition: background .2s;
+}
+.year-cell:hover { background: rgba(255,255,255,.2); }
+.year-cell.selected { background: var(--calendar-active-bg); font-weight: bold; border-radius: 20px; color: var(--calendar-active-text); }
+
+/* ---------- Icon buttons + unified tooltip ---------- */
+.icon-btn {
+  position: relative;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .2s;
+}
+.icon-btn:hover { background: #e0e0e0; }
+.icon-btn svg { pointer-events: none; }
+
+/* Tooltip bubble (applies to any .has-tooltip element) */
+.has-tooltip { position: relative; overflow: visible; }
+.has-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 8px);           /* show below */
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--tooltip-bg);
+  color: var(--tooltip-fg);
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s ease, transform .2s ease;
+  z-index: 9999;
+}
+.has-tooltip:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(2px);
+}
+
+/* Tooltip arrow */
+.has-tooltip::before {
+  
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--tooltip-bg);  /* arrow points up under bubble */
+  opacity: 0;
+  transition: opacity .2s ease;
+  z-index: 9999;
+}
+.has-tooltip:hover::before { opacity: 1; }
+
+
+/* Bottom-left edit icon placement */
+.editIcon {
+  position: absolute !important;
+  left: 10px;
+  bottom: 12px;
+}
+
+
+/* Wrapper */
+.input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Wrapper */
+.input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  padding: 32px;
+}
+
+/* Input Field */
+.input-wrapper input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--calendar-active-bg);   /* blue border */
+  border-radius: 8px;
+  background: var(--calendar-bg);  color: #fff;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* Label */
+.input-wrapper label {
+  position: absolute;
+  top: 50%;
+  left: 40px;
+  transform: translateY(-50%);
+  color: var(--calendar-active-bg);
+  font-size: 14px;
+  pointer-events: none;
+  background: var(--calendar-bg); 
+   padding: 0 4px;
+  transition: 0.2s ease all;
+}
+
+
+
+
+
+
+
+/* make placeholder hidden by default, visible on focus */
+.input-wrapper input::placeholder {
+  color: var(--calendar-text); /* visible color when shown */
+  opacity: 1;                    /* hidden by default */
+  transition: opacity .15s ease;
+}
+
+/* show placeholder only while focused */
+.input-wrapper input:focus::placeholder {
+  opacity: 1;
+}
+
+/* keep your float rules (using :focus and :valid) */
+.input-wrapper input:focus + label,
+.input-wrapper input:valid + label {
+  top: 33px;
+  left: 45px;
+  background: var(--calendar-bg);
+  color: var(--calendar-active-bg);
+  width: 72px;
+  text-align: center;
+  font-size: 12px;
+}
+
+/* optional: avoid label covering placeholder while animating */
+.input-wrapper label {
+  z-index: 2;
+  /* ...existing styles... */
+}
+.input-wrapper input {
+  position: relative;
+  z-index: 1;
+}
+
+
+
+
+
+
+
+
+
+

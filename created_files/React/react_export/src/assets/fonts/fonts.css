@@ -1,0 +1,352 @@
+
+
+/* Alegreya */
+@font-face {
+  font-family: 'Alegreya';
+  src: url('/fonts/Alegreya/Alegreya.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Amatic_SC */
+@font-face {
+  font-family: 'AmaticSC';
+  src: url('/fonts/Amatic_SC/AmaticSC.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Anton */
+@font-face {
+  font-family: 'Anton';
+  src: url('/fonts/Anton/Anton.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* arial */
+@font-face {
+  font-family: 'Arial';
+  src: url('/fonts/arial/Arial.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Arimo */
+@font-face {
+  font-family: 'Arimo';
+  src: url('/fonts/Arimo/Arimo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Baloo_2 */
+@font-face {
+  font-family: 'Baloo2';
+  src: url('/fonts/Baloo_2/Baloo2.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* bebas_neue */
+@font-face {
+  font-family: 'Bebas Neue';
+  src: url('/fonts/bebas_neue/Bebas Neue.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* besley */
+@font-face {
+  font-family: 'Besley';
+  src: url('/fonts/besley/Besley.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
+/* Cabin */
+@font-face {
+  font-family: 'Cabin';
+  src: url('/fonts/Cabin/Cabin.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* dm_sans */
+@font-face {
+  font-family: 'DMSans';
+  src: url('/fonts/dm_sans/DMSans.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Fira_Sans */
+@font-face {
+  font-family: 'FiraSans-Regular';
+  src: url('/fonts/Fira_Sans/FiraSans-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Fredoka */
+@font-face {
+  font-family: 'Fredoka';
+  src: url('/fonts/Fredoka/Fredoka.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Heebo */
+@font-face {
+  font-family: 'Heebo';
+  src: url('/fonts/Heebo/Heebo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* inter */
+@font-face {
+  font-family: 'Inter';
+  src: url('/fonts/inter/Inter.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Josefin_Sans */
+@font-face {
+  font-family: 'JosefinSans';
+  src: url('/fonts/Josefin_Sans/JosefinSans.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Karla */
+@font-face {
+  font-family: 'Karla';
+  src: url('/fonts/Karla/Karla.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Lexend */
+@font-face {
+  font-family: 'Lexend';
+  src: url('/fonts/Lexend/Lexend.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Manrope */
+@font-face {
+  font-family: 'Manrope';
+  src: url('/fonts/Manrope/Manrope.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
+/* Merriweather */
+@font-face {
+  font-family: 'Merriweather';
+  src: url('/fonts/Merriweather/Merriweather.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat/Montserrat-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/montserrat/Montserrat-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
+
+/* Mukta */
+@font-face {
+  font-family: 'Mukta';
+  src: url('/fonts/Mukta/Mukta.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* noticia_text */
+@font-face {
+  font-family: 'NoticiaText';
+  src: url('/fonts/noticia_text/NoticiaText.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Noto_Sans */
+@font-face {
+  font-family: 'NotoSans';
+  src: url('/fonts/Noto_Sans/NotoSans.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
+/* Nunito */
+@font-face {
+  font-family: 'Nunito';
+  src: url('/fonts/Nunito/Nunito.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
+/* pacifico */
+@font-face {
+  font-family: 'Pacifico';
+  src: url('/fonts/pacifico/Pacifico-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* playfair_display */
+@font-face {
+  font-family: 'Playfair';
+  src: url('/fonts/playfair_display/Playfair Display.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Poppins */
+@font-face {
+  font-family: 'Poppins';
+  src: url('/fonts/poppins/Poppins.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
+/* PT_Sans */
+@font-face {
+  font-family: 'PTSans';
+  src: url('/fonts/PT_Sans/PTSans.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Quicksand */
+@font-face {
+  font-family: 'Quicksand';
+  src: url('/fonts/Quicksand/Quicksand.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+
+/* raleway */
+@font-face {
+  font-family: 'Raleway';
+  src: url('/fonts/raleway/Raleway.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* roboto */
+@font-face {
+  font-family: 'Roboto';
+  src: url('/fonts/roboto/Roboto.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Rubik */
+@font-face {
+  font-family: 'Rubik';
+  src: url('/fonts/Rubik/Rubik.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Sora */
+@font-face {
+  font-family: 'Sora';
+  src: url('/fonts/Sora/Sora.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* Source_Sans_3 */
+@font-face {
+  font-family: 'SourceSans3';
+  src: url('/fonts/Source_Sans_3/SourceSans3.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* times_new_roman */
+@font-face {
+  font-family: 'Times New Roman';
+  src: url('/fonts/times_new_roman/Times New Roman.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Ubuntu */
+@font-face {
+  font-family: 'Ubuntu';
+  src: url('/fonts/Ubuntu/Ubuntu.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+
+/* Work_Sans */
+@font-face {
+  font-family: 'WorkSans';
+  src: url('/fonts/Work_Sans/WorkSans.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+/* SilkSerif */
+@font-face {
+  font-family: 'SilkSerif';
+  src: url('/fonts/silk_serif/SilkSerif-TRIAL-Regular-BF6740066e17571.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+

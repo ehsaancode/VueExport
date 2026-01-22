@@ -1,0 +1,64 @@
+);
+    // Extract the props from the JSX and store them in a variable (not rendering SCO)
+    let remainingComponents = [];
+    React.Children.forEach(jsxStructure.props.children, (child) => {
+        remainingComponents.push(child); // Store other components
+    });
+    // Update state with extracted data
+    setJsxComponents(remainingComponents); // Store other components
+  }, []);
+  
+    // Helper function to parse JSX into a UI Schema (for rendering)
+    const parseJSXToUISchema = (element) => {
+    if (!React.isValidElement(element)) return null;
+
+    const { type, props } = element;
+    const componentName =
+      typeof type === "string"
+        ? type
+        : type.displayName || type.name || "UnknownComponent";
+
+    const children = [];
+
+    React.Children.forEach(props.children, (child) => {
+      if (typeof child === "string" || typeof child === "number") {
+        // ✅ Preserve plain text children like "hi"
+        children.push(child);
+      } else {
+        const parsed = parseJSXToUISchema(child);
+        if (parsed) children.push(parsed);
+      }
+    });
+
+    const uiSchemaNode = {
+      type: componentName,
+      props: { ...props },
+    };
+
+    if (children.length > 0) {
+      uiSchemaNode.children = children;
+    }
+
+    // ✅ Don't delete children from props, keep as fallback
+    return uiSchemaNode;
+    };
+
+     // Generate UI schema for rendering other components
+  const uiSchema =
+    jsxComponents && jsxComponents.length > 0
+      ? jsxComponents.map(parseJSXToUISchema)
+      : [];
+
+ return (
+     <>
+       {Array.isArray(uiSchema) &&
+         uiSchema.map((component, index) => (
+           <React.Fragment key={index}>
+             {renderComponent(component)}
+           </React.Fragment>
+         ))}
+     </>
+   );
+};
+
+export default [class_name];

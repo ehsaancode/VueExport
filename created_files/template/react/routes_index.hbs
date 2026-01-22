@@ -1,0 +1,104 @@
+import React, { useState, useEffect, createContext } from "react";
+import { useRoutes, useLocation } from "react-router-dom";
+import { get, set, subscribe } from "../store/index";
+import QModalContainer from "../qlib/qmodal/QModalContainer";
+import QSeo from "../qlib/qseo/QSeo";
+import { seoArray } from "../utils/SeoArray.jsx";
+import { getStorage } from "../store/localStorage/storageConfig"
+
+// ✅ Create context here (no separate file)
+export const ScreenWidthContext = createContext();
+
+// ✅ Layouts
+{{#each importLayouts}}
+import {{this.layoutName}} from "../layouts/{{this.layoutName}}/{{this.layoutName}}_index";
+{{/each}}
+import DefaultLayout from "../layouts/defaultlayout/index";
+
+
+// ✅ Pages
+{{#each importPages}}
+import {{this.pageName}} from "../pages/{{this.pageName}}/{{this.pageName}}_index";
+{{/each}}
+
+// ✅ Model
+{{#each importModels}}
+import {{this.modelName}} from "../models/{{this.modelName}}/{{this.modelName}}_index";
+{{/each}}
+
+function AppRoutes() {
+  const location = useLocation();
+
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    {{#each appStates}}
+    {{{this.appState}}};
+    {{/each}}
+
+      const loadStorage = async () => {
+        try {
+            const storageInstance =  getStorage();
+           
+           {{#each checkStates}}
+            if (await storageInstance.localStorageGet("{{{this.state}}}")) {
+                set("{{{this.state}}}", await storageInstance.localStorageGet("{{{this.state}}}"));
+            } 
+            {{/each}}
+            
+
+        } catch (err) {
+           // console.error("❌ Error loading storage", err);
+        }
+    };
+
+    loadStorage();
+    
+    
+    const handleResize = () => setScreenWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  
+  }, []);
+
+  const routes = useRoutes([
+      {
+        element: <{{defaultPageLayoutName}} />,
+        children: [{ path: "/", element: <{{defaultPageName}} /> }],
+      },
+    {{#each pages}}
+      {
+        element: <{{this.layoutName}} />,
+        children: [{ path: "/{{this.pageName}}", element: <{{this.pageName}} /> }],
+      },
+    {{/each}}
+  ]);
+
+
+  //SEO
+  const seoContentValues = Object.fromEntries(
+  seoArray.map(item => [item.route_path, item])
+  );
+
+  // Normalize path: remove trailing slash unless it's just "/"
+  const normalizedPath = location.pathname.length > 1 && location.pathname.endsWith("/") ? location.pathname.slice(0, -1)
+  : location.pathname;
+
+  const currentSEO = seoContentValues[normalizedPath] || seoContentValues["/"] || {};
+
+  return (
+    <>
+    <QSeo {...currentSEO} />
+    <ScreenWidthContext.Provider value={screenWidth}>
+      {routes}
+      {{#each QModalContainers}}
+      <QModalContainer name="{{{this.modelName}}}">
+        <{{{this.modelName}}} />
+      </QModalContainer>
+      {{/each}}
+    </ScreenWidthContext.Provider>
+    </>
+  );
+}
+
+export default AppRoutes;

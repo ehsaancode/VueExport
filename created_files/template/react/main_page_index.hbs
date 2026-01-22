@@ -1,0 +1,25 @@
+import React, { useContext } from "react";
+import { Outlet } from "react-router-dom";
+import { ScreenWidthContext } from "../../routes/index";
+{{{importDesktopPage}}}
+{{{importTabletPage}}}
+{{{importMobilePage}}}
+
+
+const {{Page}} = () => {
+   const screenWidth = useContext(ScreenWidthContext);
+   if (screenWidth >= 1025) {
+      return {{{DesktopPage}}};
+    } else if (screenWidth > 481  && screenWidth <= 1024) {
+      return {{{TabPage}}};
+    }else {
+      return {{{MobilePage}}};
+    }
+     {{!-- return (
+      <>
+        {screenWidth >= 800 ? <About_D /> : <About_M />}
+      </>
+     ); --}}
+};
+
+export default {{{Page}}};

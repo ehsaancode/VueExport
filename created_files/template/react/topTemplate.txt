@@ -1,0 +1,26 @@
+import React, { useEffect, useState } from "react";
+import { renderComponent } from "../components/DynamicComponentRenderer";
+import { useParams } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { [class_name] } from "../templates/[class_name]";
+
+function Home() {
+  const { pathname } = useLocation();
+  const id = pathname.split("/").pop() || "";
+  //const param = useParams() ;
+  //const id = param?.id ?? 'home';
+  //alert(id)
+
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setScreenWidth(window.innerWidth);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+  
+
+  return (
+    <>

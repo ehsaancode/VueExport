@@ -1,0 +1,73 @@
+{
+  "colorBackground.background.image.url": "videoUrl",
+  "colorBackground.background.image.seoTitle": "imageSeoTitle",
+  "colorBackground.background.image.repeat": "videoRepeat",
+  "colorBackground.background.image.seoAlt": "imageSeoAlt",
+  "colorBackground.background.image.imageFit": "videoFit",
+  "typography.text.content": "headerText",
+  "repeater_data_source": "repeaterDefaultData",
+
+  "dimension.width": "width",
+  "dimension.height": "height",
+  "dimension.minWidth": "minWidth",
+  "dimension.maxWidth": "maxWidth",
+  "dimension.minHeight": "minHeight",
+  "dimension.maxHeight": "maxHeight",
+
+  "spacing.padding.top": "paddingTop",
+  "spacing.padding.right": "paddingRight",
+  "spacing.padding.bottom": "paddingBottom",
+  "spacing.padding.left": "paddingLeft",
+
+  "spacing.margin.top": "marginTop",
+  "spacing.margin.right": "marginRight",
+  "spacing.margin.bottom": "marginBottom",
+  "spacing.margin.left": "marginLeft",
+
+  "position.positionValue.top": "top",
+  "position.positionValue.right": "right",
+  "position.positionValue.bottom": "bottom",
+  "position.positionValue.left": "left",
+
+  "typography.text.fontFamily": "fontFamily",
+  "typography.text.fontSize": "fontSize",
+  "typography.text.fontWeight": "fontWeight",
+  "typography.text.textColor": "color",
+  "typography.text.letterSpacing": "letterSpacing",
+  "typography.text.lineHeight": "lineHeight",
+  "typography.text.stroke.width": "textDecorationThickness",
+
+  "boxDecoration.border.borderStyle": "borderStyle",
+  "boxDecoration.border.borderRadius.all": "borderRadius",
+  "boxDecoration.border.borderRadius.cornerRadius.topLeft": "borderTopLeftRadius",
+  "boxDecoration.border.borderRadius.cornerRadius.topRight": "borderTopRightRadius",
+  "boxDecoration.border.borderRadius.cornerRadius.bottomLeft": "borderBottomLeftRadius",
+  "boxDecoration.border.borderRadius.cornerRadius.bottomRight": "borderBottomRightRadius",
+
+  "boxDecoration.border.borderTopWidth": "borderTopWidth",
+  "boxDecoration.border.borderColor.borderTopColor": "borderTopColor",
+  "boxDecoration.border.borderStyle.borderTopStyle": "borderTopStyle",
+
+  "boxDecoration.border.borderBottomWidth": "borderBottomWidth",
+  "boxDecoration.border.borderColor.borderBottomColor": "borderBottomColor",
+  "boxDecoration.border.borderStyle.borderBottomStyle": "borderBottomStyle",
+
+  "boxDecoration.border.borderLeftWidth": "borderLeftWidth",
+  "boxDecoration.border.borderColor.borderLeftColor": "borderLeftColor",
+  "boxDecoration.border.borderStyle.borderLeftStyle": "borderLeftStyle",
+
+  "boxDecoration.border.borderRightWidth": "borderRightWidth",
+  "boxDecoration.border.borderColor.borderRightColor": "borderRightColor",
+  "boxDecoration.border.borderStyle.borderRightStyle": "borderRightStyle",
+
+  "boxDecoration.boxShadow.color": "boxShadowColor",
+  "boxDecoration.boxShadow.offsetX": "boxShadowOffsetX",
+  "boxDecoration.boxShadow.offsetY": "boxShadowOffsetY",
+  "boxDecoration.boxShadow.blurRadius": "boxShadowBlurRadius",
+  "boxDecoration.boxShadow.spreadRadius": "boxShadowSpreadRadius",
+
+  "colorBackground.background.color.color": "backgroundColor",
+
+  "layout.display.flex.gap.betweenColumns": "columnGap",
+  "layout.display.flex.gap.betweenRows": "rowGap"
+}

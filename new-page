@@ -1,0 +1,163 @@
+import React, { useEffect, useState } from "react";
+import componentsMap from "../components/componentsMap";
+import { useLocation, useParams } from "react-router-dom";
+import { renderComponent } from "../components/DynamicComponentRenderer";
+
+const { 
+  FullWidthComponent,
+  Row,
+  Div,
+  Paragraph,
+  TextH6,
+  TextH5,
+  TextH4,
+  TextH3,
+  TextH2,
+  TextH1,
+  Image,
+  Button,
+  Parallax,
+  Marquee,
+  Stack,
+  IncrementCounter,
+  Slider,
+  Accordion,
+  AccordionItem,
+  AccordionBody,
+  Wrap,
+  HorizontalParallax,
+  TabBar,
+  Tab,
+  TabBody,
+  FloatingButton,
+  Drawer,
+  DrawerBody,
+  StickyHeader,
+  HeaderBar,
+  Form,
+  FormInputElement,
+  InputText,
+  TextArea,
+  NSection,
+  MenuBar,
+  HMenuItem,
+  Menu,
+  SubMenu,
+  InputEmail,
+  InputNumber,
+  Radio,
+  CheckBox,
+  DropDown,
+  TableData,
+  TableWrapper,
+  Repeat,
+  TableSearch,
+  InputSearch,
+  Icon,
+  TablePagination,
+  TablePaginationButton,
+  PageIndicator,
+  TablePaginationInfo,
+  TablePaginationRPP,
+ TableSort,
+  TableFilter,
+  Map,
+  BottomMenu,
+  Flex,
+  TabHeader,
+  Video,
+  Section,
+  Navbar,
+  Custom,
+  Gallery,
+  Masonary,
+  ProgressbarWithPercentage,
+  ProgressbarWithStepper,
+  DashedProgressbar,
+  ProgressbarWithSlider,
+  BackDrop,
+  Carousel,
+  ErrorMessage
+} = componentsMap; 
+
+export const [class_name] = () => {
+  const location = useLocation();
+  const [openMenus, setOpenMenus] = useState({});
+  const [hoverTimeouts, setHoverTimeouts] = useState({});
+  const [scoPropsArray, setScoPropsArray] = useState([]);
+  const [jsxComponents, setJsxComponents] = useState([]);
+  const [code, setCode] = useState(null);
+  const lastSegment = location.pathname.split("/").filter(Boolean).pop();
+  // const lastSegment = useParams();
+
+    useEffect(() => {
+      Object.values(hoverTimeouts).forEach(clearTimeout);
+      return () => {
+        Object.values(hoverTimeouts).forEach(clearTimeout);
+      };
+    }, [hoverTimeouts]);
+
+    useEffect(() => {
+      setOpenMenus({});
+    }, [lastSegment]);
+
+
+    const handleMouseEnter = (menuId, parentIds = []) => {
+      setOpenMenus((prev) => {
+        let newMenus = { ...prev, [menuId]: true };
+        // Ensure all parent menus in the array remain open
+        parentIds.forEach((parent) => {
+          newMenus[parent] = true;
+        });
+
+       const timeout = setTimeout(() => {
+             // Close only sibling menus (menus at the same level)
+            Object.keys(prev).forEach((key) => {
+              if (key !== menuId && !parentIds.includes(key)) {
+                delete newMenus[key];
+              }
+             });
+         }, 1500)
+
+        return newMenus;
+      });
+    };
+
+    const handleMouseLeave = (menuId) => {
+      // Set a timeout to close the menu with a delay (prevents flickering)
+      const timeout = setTimeout(() => {
+        setOpenMenus((prev) => {
+          const updatedMenus = { ...prev };
+          delete updatedMenus[menuId]; // Close only this menu
+          return updatedMenus;
+        });
+      }, 1500);
+
+      setHoverTimeouts((prev) => ({
+        ...prev,
+        [menuId]: timeout,
+      }));
+    };
+
+  // CLOSE ALL MENUS WHEN MOVING TO A NEW TOP-LEVEL MENU
+    const handleTopMenuEnter = (menuId) => {
+      // Clear all open submenus except the one being hovered
+      setOpenMenus({});
+      // Clear any timeout preventing closure
+      if (hoverTimeouts[menuId]) {
+        clearTimeout(hoverTimeouts[menuId]);
+      }
+    };
+
+    useEffect(() => {
+        return () => {
+          // Cleanup all timeouts when component unmounts
+          Object.values(hoverTimeouts).forEach(clearTimeout);
+        };
+      }, [hoverTimeouts]);
+
+   useEffect(() => {
+      let jsxStructure;
+      setScoPropsArray();
+      // 👇 JSX to split
+       jsxStructure = (
