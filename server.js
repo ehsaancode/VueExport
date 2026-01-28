@@ -616,6 +616,11 @@ const androidProjectPath = path.resolve(
   `${commonPath.androidProjectPath.get(commonPath.environmentHosting)}`
 );
 
+const vueProjectPath = path.resolve(
+  __dirname,
+  `${commonPath.vueProjectPath.get(commonPath.environmentHosting)}`
+);
+
 // Store connected clients and their process progress
 const connectedClients = new Map();
 
@@ -724,10 +729,10 @@ app.get("/api/export/process", async (req, res) => {
   }
 
   // Validate platform
-  if (!platform || !["reactjs", "ios", "android"].includes(platform)) {
+  if (!platform || !["reactjs", "ios", "android", "vuejs"].includes(platform)) {
     return res.status(400).json({
       status: "error",
-      msg: "Invalid platform specified. Use 'reactjs', 'ios', or 'android'.",
+      msg: "Invalid platform specified. Use 'reactjs', 'ios', 'android', or 'vuejs'.",
     });
   }
 
@@ -782,6 +787,11 @@ app.get("/api/export/process", async (req, res) => {
       projectFolderPath = `${androidProjectPath}/${projectID}/export_files`;
       zipProjectPath = `${androidProjectPath}/${projectID}/android_project.zip`;
       fileName = "android_project.zip";
+    } else if (platform === "vuejs") {
+      await App.createVuejsProject(projectID, pageId, platform);
+      projectFolderPath = `${vueProjectPath}/${subProjectPath}/vue_project`;
+      zipProjectPath = `${vueProjectPath}/${subProjectPath}/vuejs_project.zip`;
+      fileName = "vuejs_project.zip";
     }
 
     console.log(`Project created successfully for platform: ${platform}`);

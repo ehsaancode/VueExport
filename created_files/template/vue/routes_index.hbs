@@ -1,0 +1,45 @@
+import { createRouter, createWebHashHistory } from 'vue-router'
+import { set } from '../store/index';
+
+// Initialize App States
+{{#each appStates}}
+{{{this.appState}}};
+{{/each}}
+
+// Layouts
+{{#each importLayouts}}
+import {{this.layoutName}} from "../layouts/{{this.layoutName}}/{{this.layoutName}}_index.vue";
+{{/each}}
+import DefaultLayout from "../layouts/defaultlayout/index.vue"; 
+// ^ Ensure DefaultLayout exists or is handled by the loop
+
+// Pages
+{{#each importPages}}
+import {{this.pageName}} from "../pages/{{this.pageName}}/{{this.pageName}}_index.vue";
+{{/each}}
+
+const routes = [
+  {
+    path: '/',
+    component: {{defaultPageLayoutName}},
+    children: [
+      { path: '', component: {{defaultPageName}} }
+    ]
+  },
+  {{#each pages}}
+  {
+    path: '/{{this.pageName}}',
+    component: {{this.layoutName}},
+    children: [
+      { path: '', component: {{this.pageName}} }
+    ]
+  },
+  {{/each}}
+];
+
+const router = createRouter({
+  history: createWebHashHistory(),
+  routes,
+});
+
+export default router;

@@ -1,0 +1,24 @@
+<script setup>
+import { ref, onMounted, onUnmounted } from "vue";
+import { useRoute } from "vue-router";
+// import components if needed
+
+const screenWidth = ref(window.innerWidth);
+
+const updateWidth = () => {
+  screenWidth.value = window.innerWidth;
+};
+
+onMounted(() => {
+  window.addEventListener("resize", updateWidth);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("resize", updateWidth);
+});
+
+// [class_name]
+</script>
+
+<template>
+  <div>

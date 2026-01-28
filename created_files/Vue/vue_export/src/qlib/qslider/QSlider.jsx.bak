@@ -1,0 +1,661 @@
+// import React, { useEffect, useState, useRef } from "react";
+// import PropTypes from "prop-types";
+// import "./QSlider.css";
+// import { generateStyle } from "../../utils/helper";
+
+// const QSlider = ({
+//   width,
+//   height,
+//   color,
+//   bgColor,
+//   bgUrl,
+//   isImageFill = false,
+//   children,
+//   isAbsoluteValue = false,
+//   overflow = "",
+//   zIndex,
+//   onClick = () => {},
+//   tailwaindClasses = "",
+//   boxShadow,
+//   backgroundSize,
+//   sliderDirection = "horizontal",
+//   sliderIndicatorType = "",
+//   sliderArrowVisible = "true",
+//   arrowActiveColor = "rgba(134, 182, 126, 0.38)",
+//   arrowDeactivatedColor = "rgba(33, 13, 214, 0.65)",
+//   indicatorActiveColor = "rgba(195, 128, 128, 0.51)",
+//   indicatorDeactivatedColor = "rgba(23, 21, 21, 0.97)",
+//   indicatorPositionType = "overlay",
+//   sliderAutoPlay = "true",
+//   sliderAutoPlayDuration = "4000ms",
+// }) => {
+//   const totalSlides = React.Children.count(children);
+//   const [currentIndex, setCurrentIndex] = useState(0);
+//   const [isTransitioning, setIsTransitioning] = useState(false);
+//   const [enableTransition, setEnableTransition] = useState(true);
+//   const sliderRef = useRef(null);
+//   const isVertical = sliderDirection === "vertical";
+
+//   const prevSlide = () => {
+//     if (isTransitioning || currentIndex === 0) return;
+//     setIsTransitioning(true);
+//     setCurrentIndex((prevIndex) => prevIndex - 1);
+//   };
+
+//   const nextSlide = () => {
+//     if (isTransitioning || currentIndex === totalSlides - 1) return;
+//     setIsTransitioning(true);
+//     setCurrentIndex((prevIndex) => prevIndex + 1);
+//   };
+
+//   // AutoPlay
+//   useEffect(() => {
+//     if (sliderAutoPlay !== "true") return;
+
+//     const duration = parseInt(sliderAutoPlayDuration.toString().replace("ms", "")) || 4000;
+
+//     const interval = setInterval(() => {
+//       if (currentIndex === totalSlides - 1) {
+//         setEnableTransition(false);
+//         setCurrentIndex(0);
+//         setTimeout(() => setEnableTransition(true), 50);
+//       } else {
+//         setCurrentIndex((prev) => prev + 1);
+//       }
+//     }, duration);
+
+//     return () => clearInterval(interval);
+//   }, [currentIndex, totalSlides, sliderAutoPlay, sliderAutoPlayDuration]);
+
+//   // Mouse scroll navigation
+//   useEffect(() => {
+//     const handleScroll = (e) => {
+//       const delta = isVertical ? e.deltaY : e.deltaX;
+//       if (delta > 0) nextSlide();
+//       else if (delta < 0) prevSlide();
+//     };
+
+//     const sliderElement = sliderRef.current;
+//     if (sliderElement) {
+//       sliderElement.addEventListener("wheel", handleScroll);
+//     }
+
+//     return () => {
+//       if (sliderElement) {
+//         sliderElement.removeEventListener("wheel", handleScroll);
+//       }
+//     };
+//   }, [currentIndex, isTransitioning, sliderDirection]);
+
+//   // End transition lock
+//   useEffect(() => {
+//     const timeout = setTimeout(() => {
+//       setIsTransitioning(false);
+//     }, 500);
+//     return () => clearTimeout(timeout);
+//   }, [currentIndex]);
+
+//   // Styles
+//   const containerStyle = {
+//     ...generateStyle({
+//       width,
+//       height,
+//       isAbsoluteValue,
+//       bgColor,
+//       bgUrl,
+//       isImageFill,
+//       color,
+//       overflow,
+//       onClick,
+//       zIndex,
+//       backgroundSize,
+//     }),
+//     overflow: isVertical ? "hidden" : overflow ?? "visible",
+//     position: "relative",
+//   };
+
+//   const contentStyle = {
+//     display: "flex",
+//     flexDirection: isVertical ? "column" : "row",
+//     transition: enableTransition ? "transform 0.5s ease-in-out" : "none",
+//     transform: isVertical
+//       ? `translateY(-${currentIndex * 100}%)`
+//       : `translateX(-${currentIndex * 100}%)`,
+//    // width: isVertical ? "100%" : `${totalSlides * 100}%`,
+//    width: isVertical ? "100%" : `100%`,
+
+//     height: "100%",
+//   };
+
+//   const slideStyle = {
+//     flexShrink: 0,
+//     width: "100%",
+//     height: "100%",
+//     display: "flex",
+//     justifyContent: "center",
+//     alignItems: "center",
+//   };
+
+//   const indicatorWrapperStyle = {
+//     position: indicatorPositionType === "overlay" ? "absolute" : "relative",
+//     bottom: indicatorPositionType === "overlay" ? "10px" : "unset",
+//     width: "100%",
+//     height: "50px",
+//     display: "flex",
+//     justifyContent: "center",
+//     alignItems: "center",
+//     gap: "8px",
+//     padding: "8px",
+//     zIndex: 10,
+//   };
+
+//   const getIndicatorStyle = (index) => {
+//     const isActive = currentIndex === index;
+
+//     const baseStyle = {
+//       cursor: "pointer",
+//       display: "flex",
+//       justifyContent: "center",
+//       alignItems: "center",
+//     };
+
+//     switch (sliderIndicatorType) {
+//       case "circle":
+//         return {
+//           ...baseStyle,
+//           width: isActive ? "15px" : "10px",
+//           height: isActive ? "15px" : "10px",
+//           borderRadius: "50%",
+//           background: isActive ? indicatorActiveColor : indicatorDeactivatedColor,
+//         };
+
+//       case "square":
+//         return {
+//           ...baseStyle,
+//           width: isActive ? "15px" : "10px",
+//           height: isActive ? "15px" : "10px",
+//           background: isActive ? indicatorActiveColor : indicatorDeactivatedColor,
+//         };
+
+//       case "dash":
+//         return {
+//           ...baseStyle,
+//           width: isActive ? "30px" : "15px",
+//           height: "15px",
+//           background: isActive ? indicatorActiveColor : indicatorDeactivatedColor,
+//           borderRadius: "5px",
+//         };
+
+//       case "number":
+//         return {
+//           ...baseStyle,
+//           padding: "4px 8px",
+//           background: isActive ? indicatorActiveColor : indicatorDeactivatedColor,
+//           borderRadius: "5px",
+//           fontSize: "12px",
+//         };
+
+//       case "thumbnail":
+//         return {
+//           ...baseStyle,
+//           borderRadius: "2px",
+//           backgroundImage: `url(${children[index]?.props?.thumbnail || ""})`,
+//           backgroundSize: "cover",
+//           backgroundPosition: "center",
+//         };
+
+//       default:
+//         return baseStyle;
+//     }
+//   };
+
+//   return (
+//     <div className="relative w-full h-full">
+//     <div className={`slider ${tailwaindClasses}`} ref={sliderRef} style={containerStyle}>
+//       <div className="slider-content" style={contentStyle}>
+//         {React.Children.map(children, (child, index) => (
+//           <div className={`slide ${index === currentIndex ? "active" : ""}`} key={index} style={slideStyle}>
+//             {child}
+//           </div>
+//         ))}
+//       </div>
+
+//       {/* Arrows */}
+//       {sliderArrowVisible === "true" && (
+//         <>
+//           <button
+//             className="prev absolute left-2 top-1/2 -translate-y-1/2 z-10"
+//             onClick={prevSlide}
+//             disabled={currentIndex === 0}
+//             style={{
+//               fontSize: "27px",
+//               display: "flex",
+//               alignItems: "center",
+//               justifyContent: "center",
+//               color: currentIndex === 0 ? arrowDeactivatedColor : arrowActiveColor,
+//             }}
+//           >
+//             ❮
+//           </button>
+
+//           <button
+//             className="next absolute right-2 top-1/2 -translate-y-1/2 z-10"
+//             onClick={nextSlide}
+//             disabled={currentIndex === totalSlides - 1}
+//             style={{
+//               fontSize: "27px",
+//               display: "flex",
+//               alignItems: "center",
+//               justifyContent: "center",
+//               color: currentIndex === totalSlides - 1 ? arrowDeactivatedColor : arrowActiveColor,
+//             }}
+//           >
+//             ❯
+//           </button>
+//         </>
+//       )}
+
+     
+//     </div>
+
+//       <div style={indicatorWrapperStyle}>
+//         {React.Children.map(children, (child, index) => {
+//           const isActive = currentIndex === index;
+
+//           return (
+//             <div
+//               key={index}
+//               style={getIndicatorStyle(index)}
+//               onClick={() => setCurrentIndex(index)}
+//             >
+//               {sliderIndicatorType === "number" && (index + 1)}
+
+//               {sliderIndicatorType === "thumbnail" && (
+//                 <div
+//                   style={{
+//                     width: isActive ? "30px" : "20px",
+//                     height: isActive ? "30px" : "20px",
+//                     overflow: "hidden",
+//                    // borderRadius: "4px",
+//                     marginTop: indicatorPositionType === "overlay" ? "0px" : "30px",
+//                     transition: "all 0.3s ease-in-out",
+//                   }}
+//                 >
+//                   {React.cloneElement(child, {
+//                     style: {
+//                       width: "100%",
+//                       height: "100%",
+//                       objectFit: "cover",
+//                     },
+//                   })}
+//                 </div>
+//               )}
+//             </div>
+//           );
+//         })}
+//       </div>
+// </div>
+//   );
+// };
+
+// QSlider.propTypes = {
+//   width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+//   height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+//   children: PropTypes.node,
+//   sliderDirection: PropTypes.oneOf(["horizontal", "vertical"]),
+//   tailwaindClasses: PropTypes.string,
+//   color: PropTypes.string,
+//   bgColor: PropTypes.string,
+//   bgUrl: PropTypes.string,
+//   isImageFill: PropTypes.bool,
+//   isAbsoluteValue: PropTypes.bool,
+//   overflow: PropTypes.string,
+//   zIndex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+//   onClick: PropTypes.func,
+//   boxShadow: PropTypes.string,
+//   backgroundSize: PropTypes.string,
+//   sliderIndicatorType: PropTypes.oneOf(["circle", "square", "dash", "number", "thumbnail"]),
+//   indicatorPositionType: PropTypes.oneOf(["belowSlider", "overlay"]),
+//   sliderArrowVisible: PropTypes.string,
+//   arrowActiveColor: PropTypes.string,
+//   arrowDeactivatedColor: PropTypes.string,
+//   indicatorActiveColor: PropTypes.string,
+//   indicatorDeactivatedColor: PropTypes.string,
+//   sliderAutoPlay: PropTypes.string,
+//   sliderAutoPlayDuration: PropTypes.string,
+// };
+
+// QSlider.displayName = "QSlider";
+// export default QSlider;
+
+
+
+
+
+
+import React, { useEffect, useState, useRef } from "react";
+import PropTypes from "prop-types";
+import "./QSlider.css";
+import { generateStyle } from "../../utils/helper";
+
+const QSlider = ({
+  width,
+  height,
+  color,
+  bgColor,
+  bgUrl,
+  isImageFill = false,
+  children,
+  isAbsoluteValue = false,
+  overflow = "",
+  zIndex,
+  onClick = () => {},
+  tailwaindClasses = "",
+  boxShadow,
+  backgroundSize,
+  sliderDirection = "horizontal",
+  sliderIndicatorType = "",
+  sliderArrowVisible = "true",
+  arrowActiveColor = "rgba(134, 182, 126, 0.38)",
+  arrowDeactivatedColor = "rgba(33, 13, 214, 0.65)",
+  indicatorActiveColor = "rgba(195, 128, 128, 0.51)",
+  indicatorDeactivatedColor = "rgba(23, 21, 21, 0.97)",
+  indicatorPositionType = "overlay",
+  sliderAutoPlay = "true",
+  sliderAutoPlayDuration = "4000ms",
+}) => {
+  const totalSlides = React.Children.count(children);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [enableTransition, setEnableTransition] = useState(true);
+  const sliderRef = useRef(null);
+  const isVertical = sliderDirection === "vertical";
+
+  const prevSlide = () => {
+    if (isTransitioning || currentIndex === 0) return;
+    setIsTransitioning(true);
+    setCurrentIndex((prevIndex) => prevIndex - 1);
+  };
+
+  const nextSlide = () => {
+    if (isTransitioning || currentIndex === totalSlides - 1) return;
+    setIsTransitioning(true);
+    setCurrentIndex((prevIndex) => prevIndex + 1);
+  };
+
+  // AutoPlay
+  useEffect(() => {
+    if (sliderAutoPlay !== "true") return;
+
+    const duration = parseInt(sliderAutoPlayDuration.toString().replace("ms", "")) || 4000;
+
+    const interval = setInterval(() => {
+      if (currentIndex === totalSlides - 1) {
+        setEnableTransition(false);
+        setCurrentIndex(0);
+        setTimeout(() => setEnableTransition(true), 50);
+      } else {
+        setCurrentIndex((prev) => prev + 1);
+      }
+    }, duration);
+
+    return () => clearInterval(interval);
+  }, [currentIndex, totalSlides, sliderAutoPlay, sliderAutoPlayDuration]);
+
+  // Mouse scroll navigation
+  useEffect(() => {
+    const handleScroll = (e) => {
+      const delta = isVertical ? e.deltaY : e.deltaX;
+      if (delta > 0) nextSlide();
+      else if (delta < 0) prevSlide();
+    };
+
+    const sliderElement = sliderRef.current;
+    if (sliderElement) {
+      sliderElement.addEventListener("wheel", handleScroll);
+    }
+
+    return () => {
+      if (sliderElement) {
+        sliderElement.removeEventListener("wheel", handleScroll);
+      }
+    };
+  }, [currentIndex, isTransitioning, sliderDirection]);
+
+  // End transition lock
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setIsTransitioning(false);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, [currentIndex]);
+
+  // Styles
+  const containerStyle = {
+    ...generateStyle({
+      width,
+      height,
+      isAbsoluteValue,
+      bgColor,
+      bgUrl,
+      isImageFill,
+      color,
+      overflow,
+      onClick,
+      zIndex,
+      backgroundSize,
+    }),
+  //  overflow: isVertical ? "hidden" : overflow ?? "visible",
+    overflow:  "hidden",
+    position: "relative",
+  };
+
+ const contentStyle = {
+  display: "flex",
+  flexDirection: "row",
+  transition: enableTransition ? "transform 0.5s ease-in-out" : "none",
+  transform: `translateX(-${currentIndex * (100 / totalSlides)}%)`,
+  width: `${totalSlides * 100}%`,
+  height: "100%",
+};
+
+const slideStyle = {
+  flexShrink: 0,
+  width: `${100 / totalSlides}%`,
+  height: "100%",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+};
+
+  const indicatorWrapperStyle = {
+    position: indicatorPositionType === "overlay" ? "absolute" : "relative",
+    bottom: indicatorPositionType === "overlay" ? "10px" : "unset",
+    width: "100%",
+    height: "50px",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: "8px",
+    padding: "8px",
+    zIndex: 10,
+  };
+
+  const getIndicatorStyle = (index) => {
+    const isActive = currentIndex === index;
+
+    const baseStyle = {
+      cursor: "pointer",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    };
+
+    switch (sliderIndicatorType) {
+      case "circle":
+        return {
+          ...baseStyle,
+          width: isActive ? "15px" : "10px",
+          height: isActive ? "15px" : "10px",
+          borderRadius: "50%",
+          background: isActive ? indicatorActiveColor : indicatorDeactivatedColor,
+        };
+
+      case "square":
+        return {
+          ...baseStyle,
+          width: isActive ? "15px" : "10px",
+          height: isActive ? "15px" : "10px",
+          background: isActive ? indicatorActiveColor : indicatorDeactivatedColor,
+        };
+
+      case "dash":
+        return {
+          ...baseStyle,
+          width: isActive ? "30px" : "15px",
+          height: "15px",
+          background: isActive ? indicatorActiveColor : indicatorDeactivatedColor,
+          borderRadius: "5px",
+        };
+
+      case "number":
+        return {
+          ...baseStyle,
+          padding: "4px 8px",
+          background: isActive ? indicatorActiveColor : indicatorDeactivatedColor,
+          borderRadius: "5px",
+          fontSize: "12px",
+        };
+
+      case "thumbnail":
+        return {
+          ...baseStyle,
+          borderRadius: "2px",
+          backgroundImage: `url(${children[index]?.props?.thumbnail || ""})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        };
+
+      default:
+        return baseStyle;
+    }
+  };
+
+  return (
+    <div className="relative w-full h-full">
+    <div className={`slider ${tailwaindClasses}`} ref={sliderRef} style={containerStyle}>
+      <div className="slider-content" style={contentStyle}>
+        {React.Children.map(children, (child, index) => (
+          <div className={`slide ${index === currentIndex ? "active" : ""}`} key={index} style={slideStyle}>
+            {child}
+          </div>
+        ))}
+      </div>
+
+      {/* Arrows */}
+      {sliderArrowVisible === "true" && (
+        <>
+          <button
+            className="prev absolute left-2 top-1/2 -translate-y-1/2 z-10"
+            onClick={prevSlide}
+            disabled={currentIndex === 0}
+            style={{
+              fontSize: "27px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: currentIndex === 0 ? arrowDeactivatedColor : arrowActiveColor,
+            }}
+          >
+            ❮
+          </button>
+
+          <button
+            className="next absolute right-2 top-1/2 -translate-y-1/2 z-10"
+            onClick={nextSlide}
+            disabled={currentIndex === totalSlides - 1}
+            style={{
+              fontSize: "27px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              color: currentIndex === totalSlides - 1 ? arrowDeactivatedColor : arrowActiveColor,
+            }}
+          >
+            ❯
+          </button>
+        </>
+      )}
+
+     
+    </div>
+
+      <div style={indicatorWrapperStyle}>
+        {React.Children.map(children, (child, index) => {
+          const isActive = currentIndex === index;
+
+          return (
+            <div
+              key={index}
+              style={getIndicatorStyle(index)}
+              onClick={() => setCurrentIndex(index)}
+            >
+              {sliderIndicatorType === "number" && (index + 1)}
+
+              {sliderIndicatorType === "thumbnail" && (
+                <div
+                  style={{
+                    width: isActive ? "30px" : "20px",
+                    height: isActive ? "30px" : "20px",
+                    overflow: "hidden",
+                   // borderRadius: "4px",
+                    marginTop: indicatorPositionType === "overlay" ? "0px" : "30px",
+                    transition: "all 0.3s ease-in-out",
+                  }}
+                >
+                  {React.cloneElement(child, {
+                    style: {
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    },
+                  })}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+</div>
+  );
+};
+
+QSlider.propTypes = {
+  width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  children: PropTypes.node,
+  sliderDirection: PropTypes.oneOf(["horizontal", "vertical"]),
+  tailwaindClasses: PropTypes.string,
+  color: PropTypes.string,
+  bgColor: PropTypes.string,
+  bgUrl: PropTypes.string,
+  isImageFill: PropTypes.bool,
+  isAbsoluteValue: PropTypes.bool,
+  overflow: PropTypes.string,
+  zIndex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  onClick: PropTypes.func,
+  boxShadow: PropTypes.string,
+  backgroundSize: PropTypes.string,
+  sliderIndicatorType: PropTypes.oneOf(["circle", "square", "dash", "number", "thumbnail"]),
+  indicatorPositionType: PropTypes.oneOf(["belowSlider", "overlay"]),
+  sliderArrowVisible: PropTypes.string,
+  arrowActiveColor: PropTypes.string,
+  arrowDeactivatedColor: PropTypes.string,
+  indicatorActiveColor: PropTypes.string,
+  indicatorDeactivatedColor: PropTypes.string,
+  sliderAutoPlay: PropTypes.string,
+  sliderAutoPlayDuration: PropTypes.string,
+};
+
+QSlider.displayName = "QSlider";
+export default QSlider;

@@ -1,0 +1,28 @@
+<template>
+  <div class="page-container">
+    {{#each scenes}}
+    <{{{this.sceneName}}} v-if="scene === '{{{this.sceneName}}}'" @setupSceneCalling="setupScene"
+      @sceneValuePassToPage="receivedSceneValue" :receivedValueFromPage="passSceneValue" />
+    {{/each}}
+  </div>
+</template>
+
+<script setup>
+  import { ref } from 'vue';
+  {{#each importScenes}}
+  import {{{this.sceneName}}} from "./{{{this.sceneName}}}.vue";
+  {{/each}}
+
+  const scene = ref("{{{currentSceneName}}}");
+  const passSceneValue = ref(null);
+
+  [page_states]
+
+  const setupScene = (newScene) => {
+    scene.value = newScene;
+  };
+
+  const receivedSceneValue = (value) => {
+    passSceneValue.value = value;
+  };
+</script>

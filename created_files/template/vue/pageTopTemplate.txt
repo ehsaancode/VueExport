@@ -1,0 +1,110 @@
+<script setup>
+import { ref, reactive, onMounted, onUnmounted, watch, computed, provide } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import componentsMap from '../../../qlib/componentsMap.vue';
+// import { get, set } from '../../store/index';
+import { get, set } from '../../../store/index';
+
+
+[import_files]
+
+const {
+  QFullWidth, QRow, QDiv, QParagraph, QTextH6, QTextH5, QTextH4, QTextH3, QTextH2, QTextH1, QImage, QButton,
+  QParallax, QMarquee, QStack, QIncrementCounter, QSlider, QAccordion, QAccordionItem, QAccordionBody, QWrap,
+  QHorizontalParallax, QTabBar, QTab, QTabBody, QTabHeader, QFloatingButton, QDrawer, QDrawerBody, QStickyHeader,
+  QHeaderBar, QForm, QFormInputElement, QInputText, QTextArea, QNSection, QMenuBar, QHMenuItem, QMenu, QSubMenu,
+  QInputEmail, QInputNumber, QRadio, QCheckBox, QDropDown, QTableData, QTableWrapper, QRepeat, QTableSearch,
+  QInputSearch, QIcon, QTablePagination, QTablePaginationButton, QPageIndicator, QTablePaginationInfo,
+  QTablePaginationRPP, QTableSort, QTableFilter, QMap, QBottomMenu, QFlex, QVideo, QSection, QNavbar,
+  QCustom, QGallery, QMasonary, QProgressbarWithPercentage, QProgressbarWithStepper, QDashedProgressbar,
+  QProgressbarWithSlider, QBackDrop, QCarousel, QErrorMessage, QDatePicker, QTimePicker, QDateRangePicker,
+  QTable, QColumnHeaders, QColumnHeader, QTableRows, QTableRow, QTableCell, QMultiSelectDropdown, QActionFlow,
+  QModalContainer, QColumnChart, QAreaChart, QLineChart, QBarChart, QPieChart
+} = componentsMap;
+
+const props = defineProps(['setupSceneCalling', 'sceneValuePassToPage', 'receivedValueFromPage']);
+
+const loading = ref(false);
+const router = useRouter();
+const route = useRoute();
+
+const openMenus = ref({});
+const hoverTimeouts = ref({});
+
+// Force component to re-render on store change manually
+const componentKey = ref(0);
+const forceUpdate = () => componentKey.value++;
+
+// [page_states]
+
+onMounted(() => {
+  // Cleanup timeouts
+  return () => {
+    Object.values(hoverTimeouts.value).forEach(clearTimeout);
+  };
+});
+
+// Watch for route changes to clear menus
+watch(() => route.path, () => {
+  openMenus.value = {};
+});
+
+const handleMouseEnter = (menuId, parentIds = []) => {
+  let newMenus = { ...openMenus.value, [menuId]: true };
+  
+  // Ensure all parent menus remain open
+  parentIds.forEach((parent) => {
+    newMenus[parent] = true;
+  });
+
+  // Logic to close siblings after delay
+  const timeout = setTimeout(() => {
+    const freshMenus = { ...openMenus.value };
+    // Close menus that are not the current one or its parents
+    Object.keys(freshMenus).forEach((key) => {
+      if (key !== menuId && !parentIds.includes(key)) {
+         delete freshMenus[key];
+      }
+    });
+    openMenus.value = freshMenus;
+  }, 1500);
+  
+  openMenus.value = newMenus;
+};
+
+const handleMouseLeave = (menuId) => {
+  const timeout = setTimeout(() => {
+    const updatedMenus = { ...openMenus.value };
+    delete updatedMenus[menuId];
+    openMenus.value = updatedMenus;
+  }, 1500);
+  
+  hoverTimeouts.value = {
+    ...hoverTimeouts.value,
+    [menuId]: timeout
+  };
+};
+
+const handleTopMenuEnter = (menuId) => {
+  openMenus.value = {};
+  if (hoverTimeouts.value[menuId]) {
+    clearTimeout(hoverTimeouts.value[menuId]);
+  }
+};
+
+// Provide menu state/functions to descendants
+provide('menuState', {
+  openMenus,
+  handleMouseEnter,
+  handleMouseLeave,
+  handleTopMenuEnter
+});
+
+// [action_variable]
+// [action_method]
+// [action_actions]
+
+</script>
+
+<template>
+  <div :key="componentKey">

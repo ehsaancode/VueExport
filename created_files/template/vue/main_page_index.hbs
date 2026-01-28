@@ -1,0 +1,35 @@
+<template>
+  <component :is="currentComponent" />
+</template>
+
+<script setup>
+import { ref, computed, onMounted, onUnmounted, defineAsyncComponent } from 'vue';
+
+{{{importDesktopPage}}}
+{{{importTabletPage}}}
+{{{importMobilePage}}}
+
+const screenWidth = ref(window.innerWidth);
+
+const updateWidth = () => {
+  screenWidth.value = window.innerWidth;
+};
+
+onMounted(() => {
+  window.addEventListener('resize', updateWidth);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateWidth);
+});
+
+const currentComponent = computed(() => {
+  if (screenWidth.value >= 1025) {
+    return {{{Page}}}_desktop;
+  } else if (screenWidth.value > 481 && screenWidth.value <= 1024) {
+    return {{{Page}}}_tablet;
+  } else {
+    return {{{Page}}}_mobile;
+  }
+});
+</script>

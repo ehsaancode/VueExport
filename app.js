@@ -19,6 +19,7 @@ const apiStatesService = require("./API_Service/states_service");
 const collectionsService = require("./API_Service/collections_service");
 const themeService = require("./API_Service/theme_service");
 const { generateSitemap } = require("./parser/React/react_sitemap_generator");
+const { createVuejsProject } = require("./parser/Vue/create_vuejs_project");
 
 const reactProjectPath = path.resolve(
   __dirname,
@@ -646,7 +647,7 @@ class App {
     // Log final results
     const successful = Array.isArray(processingResults)
       ? processingResults.filter((r) => r?.success !== false && !r?.error)
-          .length
+        .length
       : 0;
     const failed = Array.isArray(processingResults)
       ? processingResults.filter((r) => r?.success === false || r?.error).length
@@ -693,6 +694,15 @@ class App {
       await parserPageContentAndroid.mobilePage(projectFolderPath);
     } catch (error) {
       console.error("Error in run:", error);
+    }
+  }
+
+  async createVuejsProject(projectID, pageId, platform) {
+    try {
+      await createVuejsProject(projectID, pageId, platform);
+    } catch (error) {
+      console.error("Error in createVuejsProject wrapper:", error);
+      throw error;
     }
   }
 
@@ -745,9 +755,8 @@ class App {
       const hostname = `https://staging.cmsexport.react.redoq.host/${subProjectPath}/`;
       robotsContent += `Sitemap: ${hostname}sitemap.xml\n`;
 
-      const projectFolderPath = `${
-        basePath || reactProjectPath
-      }/${projectID}/react_project`;
+      const projectFolderPath = `${basePath || reactProjectPath
+        }/${projectID}/react_project`;
       const publicFolderPath = `${projectFolderPath}/public`;
 
       await readWriteFile.createFolderIfNotExists(publicFolderPath);

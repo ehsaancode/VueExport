@@ -1,0 +1,23 @@
+{{!-- import React, { useContext, useEffect, useState } from "react"; --}}
+import { ScreenWidthContext } from "../../routes/index";
+
+const {{{ComponentTitle}}} = () => {
+  const screenWidth = useContext(ScreenWidthContext);
+  const [DesktopComponent, setDesktopComponent] = useState(null);
+  const [MobileComponent, setMobileComponent] = useState(null);
+
+  useEffect(() => {
+    
+    {{{importDesktopComponent}}}
+    {{{importMobileComponent}}}
+    
+  }, []);
+
+  if (screenWidth >= 800) {
+    return DesktopComponent ? <DesktopComponent /> : <></>;
+  } else {
+    return MobileComponent ? <MobileComponent /> : <></>;
+  }
+};
+
+export default {{ComponentTitle}};

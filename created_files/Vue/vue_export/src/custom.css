@@ -1,0 +1,527 @@
+/* @import "./theme/theme.css"; */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+input:focus {
+  /* outline: none; */
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.qmenu {
+  display: inline-block;
+  position: relative;
+  padding: 10px;
+  background: #3498db;
+  color: white;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.qsubmenu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  display: block;
+}
+
+/* Hide spinners in Chrome, Safari, Edge, Opera */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Hide spinners in Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.radio-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-size: 16px;
+  gap: 8px;
+}
+
+.custom-radio-input {
+  display: none; /* Hide default radio */
+}
+
+.custom-radio-circle {
+  width: 26px;
+  height: 26px;
+  border: 2px solid #ccc; /* Default unselected border (gray) */
+  border-radius: 50%;
+  position: relative;
+  box-sizing: border-box;
+  transition: border 0.3s ease; /* Smooth border transition */
+}
+
+/* When checked, change outer border color and show inner dot */
+.custom-radio-input:checked + .custom-radio-circle {
+  border: 4px solid #4bb3ff; /* Outer bold blue border on check */
+}
+
+.custom-radio-input:checked + .custom-radio-circle::after {
+  content: "";
+  width: 14px;
+  height: 14px;
+  background-color: #4bb3ff; /* Inner filled circle */
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+html,
+body {
+  overflow-x: hidden;
+}
+
+#root {
+  overflow: hidden; /* hides both horizontal and vertical scroll */
+}
+
+.custom-table-wrapper {
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+  overflow-y: hidden;
+  min-height: 400px;
+}
+
+.top-bar {
+  margin-bottom: 1rem;
+  text-align: left;
+}
+
+.global-search {
+  width: 250px;
+  font-size: 14px;
+  margin: 10px 10px 10px 0px;
+  height: 27px;
+  border-radius: 5px;
+  border: 1.5px solid #bfb3b3;
+  padding: 7px;
+}
+
+.table-scroll {
+  /* overflow-x: auto; */
+}
+
+.custom-table {
+  /* width: 100%; */
+  border-collapse: collapse;
+  /* min-width: 1200px;
+  overflow: hidden;
+  min-height: 200px; */
+}
+
+.custom-table th,
+.custom-table td {
+  border: 2px solid #ddd;
+  /* padding: 10px; */
+  /* text-align: center; */
+  /* vertical-align: middle; */
+  /* height: 20px; */
+}
+
+.custom-table th {
+  /* background-color: #f9f9f9;
+  position: relative;
+  cursor: pointer;
+  white-space: nowrap; */
+}
+
+.sort-icon {
+  margin-left: 8px;
+  font-size: 14px;
+}
+
+.tableBody td {
+  height: 20px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.pagination-controls span {
+  font-size: 14px;
+  margin-bottom: 0.5rem;
+}
+
+.pagination-controls .buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.pagination-controls button {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.pagination-controls button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+th.header-cell {
+  font-weight: normal;
+  position: relative;
+  padding: 8px;
+}
+
+.header-wrapper {
+  /* display: flex;
+  flex-direction: column;
+  align-items: flex-start; */
+}
+
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: normal;
+  cursor: pointer;
+  width: 100%;
+}
+
+.sort-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  transition: background 0.3s ease;
+}
+
+.sort-icon-wrapper:hover {
+  background: #e0e0e0;
+}
+
+.column-search {
+  width: 90%;
+  font-size: 14px;
+  margin: 10px 10px 10px 0px;
+  height: 27px;
+  border-radius: 5px;
+  border: 1.5px solid #bfb3b3;
+  padding: 7px;
+}
+
+.no-column-search {
+  width: 90%;
+  font-size: 14px;
+  margin: 10px 10px 10px 0px;
+  height: 27px;
+
+  padding: 7px;
+}
+
+.sort-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  transition: background-color 0.3s ease;
+}
+
+.sort-icon-wrapper:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.sort-icon-svg {
+  fill: #333;
+  transition: transform 0.3s ease;
+}
+
+.sort-icon-svg.asc {
+  transform: rotate(180deg); /* ascending */
+}
+
+.sort-icon-svg.desc {
+  transform: rotate(0deg); /* descending */
+}
+
+.hamburger {
+  width: 30px;
+  height: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.hamburger span {
+  height: 4px;
+  width: 100%;
+  background-color: #333;
+  border-radius: 2px;
+  transition: 0.3s;
+}
+
+.header-wrapper {
+  /* display: flex;
+  flex-direction: column;
+  gap: 4px; */
+}
+
+.header-title {
+  /* display: flex;
+  justify-content: space-between; */
+  /* align-items: center; */
+  /* cursor: pointer; */
+}
+
+.title-text {
+  /* font-weight: 500; */
+  width: 100%;
+}
+
+.sort-icon-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sort-icon-svg {
+  fill: #333;
+  transition: transform 0.3s ease;
+}
+
+.sort-icon-svg.asc {
+  transform: rotate(180deg);
+}
+
+.sort-icon-svg.desc {
+  transform: rotate(0deg);
+}
+
+.sort-icon-svg.inactive {
+  opacity: 0.2;
+  transform: rotate(0deg);
+}
+
+/*............new pagination  design like this  <1>...........*/
+
+.pagination-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin-top: 1rem;
+}
+
+.pagination-left,
+.pagination-center,
+.pagination-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.arrow-button {
+  background: transparent;
+  border: none;
+  font-size: 40px;
+  cursor: pointer;
+  color: #b5afaf;
+}
+
+.arrow-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.page-number {
+  background-color: #0e71db;
+  color: white;
+  padding: 9px 16px;
+  font-weight: bold;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Can be global CSS or inline styles */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* .shimmer-placeholder {
+  height: 100%;
+  width: 100%;
+  animation: shimmer 1.5s infinite;
+  background: linear-gradient(
+    to right,
+    #f6f7f8 0%,
+    #eaeaea 20%,
+    #f6f7f8 40%,
+    #f6f7f8 100%
+  );
+  background-size: 1000px 100%;
+} */
+
+.shimmer-placeholder {
+  position: relative;
+  overflow: hidden;
+  background-color: #f6f7f8;
+}
+
+.shimmer-placeholder::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -150%;
+  height: 100%;
+  width: 150%;
+  background: linear-gradient(
+    to right,
+    #f6f7f8 0%,
+    #eaeaea 20%,
+    #f6f7f8 40%,
+    #f6f7f8 100%
+  );
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    left: 100%;
+  }
+}
+
+/* Apply box-sizing to everything */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+input:focus {
+  /* border: 1px solid #ccc;  */
+  outline: none;
+}
+
+textarea:focus {
+  /* border: 1px solid #ccc;  */
+  outline: none;
+}
+
+.custom-table th {
+  position: sticky;
+  top: -2px;
+  z-index: 1;
+}
+
+.scrollable-hidden-scroll::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* Optional: just in case */
+}
+
+.scrollable-hidden-scroll {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+/* Works in Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 8px; /* vertical scrollbar width */
+  height: 8px; /* horizontal scrollbar height */
+}
+
+::-webkit-scrollbar-button {
+  display: none; /* ❌ removes top/bottom & left/right arrows */
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Thumb */
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #cbd5e1, #94a3b8);
+  border-radius: 10px;
+}
+
+/* Hover effect */
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #94a3b8, #64748b);
+}

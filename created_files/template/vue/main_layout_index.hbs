@@ -1,0 +1,49 @@
+<script setup>
+import { ref, onMounted, onUnmounted, computed, defineAsyncComponent } from 'vue';
+
+{{#if hasDesktop}}
+const DesktopLayout = defineAsyncComponent(() => import('./Desktop/{{{LayoutTitle}}}.vue'));
+{{/if}}
+
+{{#if hasMobile}}
+const MobileLayout = defineAsyncComponent(() => import('./Mobile/{{{LayoutTitle}}}.vue'));
+{{/if}}
+
+const screenWidth = ref(window.innerWidth);
+
+const updateWidth = () => {
+  screenWidth.value = window.innerWidth;
+};
+
+onMounted(() => {
+  window.addEventListener('resize', updateWidth);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateWidth);
+});
+
+const activeComponent = computed(() => {
+  if (screenWidth.value >= 800) {
+    {{#if hasDesktop}}
+    return DesktopLayout;
+    {{else}}
+    return null; 
+    {{/if}}
+  } else {
+    {{#if hasMobile}}
+    return MobileLayout;
+    {{else}}
+    return null;
+    {{/if}}
+  }
+});
+</script>
+
+<template>
+  <component :is="activeComponent" v-if="activeComponent" />
+  <div v-else>
+      <!-- Fallback or Default Layout -->
+      <p>No layout available for this screen size.</p>
+  </div>
+</template>

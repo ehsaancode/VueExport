@@ -1,0 +1,123 @@
+<script setup>
+import { ref, reactive, onMounted, onUnmounted, watch, computed } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
+import componentsMap from '../../../qlib/componentsMap.vue';
+import { get, set } from '../../../store/index';
+
+
+// [import_files]
+
+const {
+  QFullWidth,
+  QRow,
+  QDiv,
+  QParagraph,
+  QTextH6,
+  QTextH5,
+  QTextH4,
+  QTextH3,
+  QTextH2,
+  QTextH1,
+  QImage,
+  QButton,
+  QParallax,
+  QMarquee,
+  QStack,
+  QIncrementCounter,
+  QSlider,
+  QAccordion,
+  QAccordionItem,
+  QAccordionBody,
+  QWrap,
+  QHorizontalParallax,
+  QTabBar,
+  QTab,
+  QTabBody,
+  QTabHeader,
+  QFloatingButton,
+  QDrawer,
+  QDrawerBody,
+  QStickyHeader,
+  QHeaderBar,
+  QForm,
+  QFormInputElement,
+  QInputText,
+  QTextArea,
+  QNSection,
+  QMenuBar,
+  QHMenuItem,
+  QMenu,
+  QSubMenu,
+  QInputEmail,
+  QInputNumber,
+  QRadio,
+  QCheckBox,
+  QDropDown,
+  QTableData,
+  QTableWrapper,
+  QRepeat,
+  QTableSearch,
+  QInputSearch,
+  QIcon,
+  QTablePagination,
+  QTablePaginationButton,
+  QPageIndicator,
+  QTablePaginationInfo,
+  QTablePaginationRPP,
+  QTableSort,
+  QTableFilter,
+  QMap,
+  QBottomMenu,
+  QFlex,
+  QVideo,
+  QSection,
+  QNavbar,
+  QCustom,
+  QGallery,
+  QMasonary,
+  QProgressbarWithPercentage,
+  QProgressbarWithStepper,
+  QDashedProgressbar,
+  QProgressbarWithSlider,
+  QBackDrop,
+  QCarousel,
+  QErrorMessage,
+  QDatePicker,
+  QTimePicker,
+  QDateRangePicker,
+  QTable,
+  QColumnHeaders,
+  QColumnHeader,
+  QTableRows,
+  QTableRow,
+  QTableCell,
+  QMultiSelectDropdown,
+  QActionFlow,
+  QModalContainer,
+  QColumnChart,
+  QAreaChart,
+  QLineChart,
+  QBarChart,
+  QPieChart
+} = componentsMap;
+
+const props = defineProps(['setupSceneCalling', 'sceneValuePassToPage', 'receivedValueFromPage']);
+
+const loading = ref(false);
+const router = useRouter();
+const route = useRoute();
+
+// [action_variable]
+
+// [action_method]
+
+// [action_actions]
+
+// Force component to re-render on store change manually (mimicking React logic if needed, otherwise rely on reactivity)
+const componentKey = ref(0);
+const forceUpdate = () => componentKey.value++;
+
+</script>
+
+<template>
+  <div :key="componentKey">

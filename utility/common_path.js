@@ -1,5 +1,5 @@
 //const environmentHosting = "server";
-  // const environmentHosting = "local_pabitra";
+// const environmentHosting = "local_pabitra";
 const environmentHosting = "local_ehsaan";
 
 //const environmentHosting = "local_biswajit"; // local or server
@@ -20,6 +20,13 @@ const reactProjectPath = new Map([
     "C:\\Users\\suman\\Dev-Project\\Live Project\\Node\\output_project\\reactjs", // Fixed: Escaped backslashes
   ],
 ]);
+
+const vueProjectPath = new Map([
+  ["server", "/home/ubuntu/output_project/vuejs"],
+  ["local_ehsaan", "C:\\Users\\maile\\Documents\\kuikExport"],
+
+]);
+
 
 const reactProjectBuildPath = new Map([
   ["server", "/home/ubuntu/cmsexport_html_biswajit"],
@@ -104,6 +111,7 @@ const wrl = new Map([
 module.exports = {
   environmentHosting,
   reactProjectPath,
+  vueProjectPath,
   reactProjectBuildPath,
   reactNativeProjectPath,
   androidProjectPath,
