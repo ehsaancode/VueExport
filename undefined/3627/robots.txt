@@ -1,3 +1,0 @@
-User-agent: *
-Allow: /
-Sitemap: https://staging.cmsexport.react.redoq.host/3627/sitemap.xml
