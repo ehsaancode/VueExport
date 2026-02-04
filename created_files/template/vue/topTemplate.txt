@@ -17,7 +17,7 @@ onUnmounted(() => {
   window.removeEventListener("resize", updateWidth);
 });
 
-// [class_name]
+[class_name]
 </script>
 
 <template>

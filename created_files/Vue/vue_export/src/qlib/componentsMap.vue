@@ -43,7 +43,7 @@ import QSubMenu from "./qsubmenu/QSubMenu.vue";
 import QInputEmail from "./qinputemail/QInputEmail.vue";
 import QInputNumber from "./qinputnumber/QInputNumber.vue";
 import QRadio from "./qradio/QRadio.vue";
-import QCheckBox from "./qcheckbox/QCheckBox.vue";
+import QCheckBox from "./qcheckbox/QCheckbox.vue";
 import QDropDown from "./qdropdown/QDropdown.vue";
 import QRepeat from "./qrepeat/QRepeat.vue";
 import QInputSearch from "./qinputsearch/QInputSearch.vue";

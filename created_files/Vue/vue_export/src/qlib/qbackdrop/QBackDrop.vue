@@ -54,9 +54,6 @@ const components = computed(() => {
   let prevIcon = null;
 
   children.forEach((child) => {
-    // Attempt to identify component name. 
-    // In Vue, child.type.name (Options API) or child.type.__name (script setup) 
-    // or sometimes we might need to rely on checking props if the name isn't clear.
     const typeName = child.type?.name || child.type?.__name || child.type?.displayName;
     const widgetType = child.props?.clickableWidget;
 
@@ -77,11 +74,6 @@ const components = computed(() => {
 const renderCarousel = () => {
     const { carousel } = components.value;
     if (!carousel) return null;
-
-    // React: cloneElement(carousel, { children: [images[index]] })
-    // Vue: We need to override the default slot of the carousel component.
-    // Ensure 'images' contains VNodes or components that can be rendered.
-    // If 'images' are raw VNodes from QGallery, we pick the one at 'index'.
     
     if (props.images && props.images[props.index]) {
         return cloneVNode(carousel, {}, {

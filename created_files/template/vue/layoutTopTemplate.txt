@@ -96,7 +96,7 @@ provide('menuState', {
   handleTopMenuEnter
 });
 
-// [class_name]
+[class_name]
 </script>
 
 <template>

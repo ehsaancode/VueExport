@@ -100,9 +100,9 @@ provide('menuState', {
   handleTopMenuEnter
 });
 
-// [action_variable]
-// [action_method]
-// [action_actions]
+[action_variable]
+[action_method]
+[action_actions]
 
 </script>
 

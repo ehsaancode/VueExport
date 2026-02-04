@@ -107,11 +107,11 @@ const loading = ref(false);
 const router = useRouter();
 const route = useRoute();
 
-// [action_variable]
+ [action_variable]
 
-// [action_method]
+ [action_method]
 
-// [action_actions]
+ [action_actions]
 
 // Force component to re-render on store change manually (mimicking React logic if needed, otherwise rely on reactivity)
 const componentKey = ref(0);
