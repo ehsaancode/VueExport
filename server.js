@@ -790,8 +790,35 @@ app.get("/api/export/process", async (req, res) => {
     } else if (platform === "vuejs") {
       await App.createVuejsProject(projectID, pageId, platform);
       projectFolderPath = `${vueProjectPath}/${subProjectPath}/vue_project`;
-      zipProjectPath = `${vueProjectPath}/${subProjectPath}/vuejs_project.zip`;
-      fileName = "vuejs_project.zip";
+      // zipProjectPath = `${vueProjectPath}/${subProjectPath}/vuejs_project.zip`;
+      // fileName = "vuejs_project.zip";
+
+      if (useWebSocket) {
+        emitProcessProgress(
+          socketId,
+          projectID,
+          platform,
+          "completed",
+          "Vue Export completed successfully",
+          100
+        );
+
+        const client = connectedClients.get(socketId);
+        client.processStatus = "completed";
+
+        io.to(socketId).emit("process_completed", {
+          projectID,
+          platform,
+          filePath: projectFolderPath,
+          timestamp: new Date().toISOString(),
+          message: "Export process completed successfully.",
+        });
+      }
+      return res.status(200).json({
+        status: "success",
+        message: "Vue project created successfully.",
+        path: projectFolderPath,
+      });
     }
 
     console.log(`Project created successfully for platform: ${platform}`);
