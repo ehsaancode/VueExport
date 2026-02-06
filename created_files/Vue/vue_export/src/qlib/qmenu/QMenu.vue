@@ -1,23 +1,25 @@
 <template>
-  <div class="q-component-stub QMenu">
-    QMenu (Stub)
+  <div
+    class="cursor-pointer relative h-auto"
+    @mouseenter="handleMouseEnter"
+    @mouseleave="handleMouseLeave"
+  >
     <slot></slot>
   </div>
 </template>
 
 <script setup>
-// Stub component for QMenu
-const props = defineProps({
-  tailwaindClasses: String,
-  widgetId: String,
-  // Accept any other props loosely
+defineProps({
+  id: String
 });
-</script>
 
-<style scoped>
-.q-component-stub {
-  border: 1px dashed red;
-  padding: 4px;
-  color: red;
-}
-</style>
+const emit = defineEmits(['mouseenter', 'mouseleave']);
+
+const handleMouseEnter = (event) => {
+  emit('mouseenter', event);
+};
+
+const handleMouseLeave = (event) => {
+  emit('mouseleave', event);
+};
+</script>
