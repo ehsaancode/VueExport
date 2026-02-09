@@ -176,9 +176,9 @@ const containerStyle = computed(() => {
 .q-marquee-inner {
   display: flex;
   flex-wrap: nowrap;
-  min-width: 200%; /* Ensure the content is at least twice as wide as the container */
+  min-width: 200%;
   animation: marqueeAnimation 25s linear infinite;
-  will-change: transform; /* Optimizes performance and reduces flicker */
+  will-change: transform;
   transition: transform 25s linear;
   justify-content: center;
   align-items: center;

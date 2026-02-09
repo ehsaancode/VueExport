@@ -190,7 +190,8 @@ class ParserHMenuItem {
       " ".repeat(this.startingColum) +
       `<HMenuItem
 
-        onMouseEnter={() => handleTopMenuEnter("")}
+        @mouseenter="handleTopMenuEnter('')"
+
     \n`;
 
     // Add dynamic properties to the JSX

@@ -87,7 +87,7 @@ class ParserHMenuItem {
       " ".repeat(this.startingColum) +
       `<QHMenuItem
 
-        onMouseEnter={() => handleTopMenuEnter("")}
+        @mouseenter="handleTopMenuEnter('')"
     \n`;
 
     // Add dynamic properties to the JSX
@@ -125,9 +125,9 @@ class ParserHMenuItem {
       `>\n  <QMenu 
     id="${this.jsonObjects["id"]}"
     
-            onMouseEnter={() => handleMouseEnter("${
+            @mouseenter="handleMouseEnter('${
               this.jsonObjects[`id`]
-            }",[${await commonUtilsReact.getParentIds()}])}
+            }',[${await commonUtilsReact.getParentIds()}])"
 
     
     >\n  `;
@@ -163,12 +163,12 @@ class ParserHMenuItem {
           `<QSubMenu  
         id="${this.jsonObjects["id"]}"
         left="${allSame ? "0" : ""}"
-        isOpen={openMenus["${this.jsonObjects["id"]}"]}
-        onMouseEnter={() => handleMouseEnter("${
+        :is-open="openMenus['${this.jsonObjects["id"]}']"
+        @mouseenter="handleMouseEnter('${
           jsonObj[`id`]
-        }",[${await commonUtilsReact.getParentIds()}])}
+        }',[${await commonUtilsReact.getParentIds()}])"
 
-        onMouseLeave={() => handleMouseLeave("${jsonObj[`id`]}")}
+        @mouseleave="handleMouseLeave('${jsonObj[`id`]}')"
         >\n <QHMenuItem> `;
         await readWriteFile.writeToFile(this.fileName, componentJSX);
 

@@ -79,7 +79,7 @@ class ParserMenuBar {
 
      setOpenMenus={setOpenMenus}
 
-     onMouseLeave={() => handleMouseLeave("")}
+      @mouseenter="handleMouseLeave('')"
     \n`;
 
     // Add dynamic properties to the JSX
