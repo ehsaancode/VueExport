@@ -1,23 +1,18 @@
 <template>
-  <div class="q-component-stub QTab">
-    QTab (Stub)
+  <div :class="tailwaindClasses">
     <slot></slot>
   </div>
 </template>
 
 <script setup>
-// Stub component for QTab
-const props = defineProps({
-  tailwaindClasses: String,
-  widgetId: String,
-  // Accept any other props loosely
-});
-</script>
+defineOptions({
+  name: 'QTab'
+})
 
-<style scoped>
-.q-component-stub {
-  border: 1px dashed red;
-  padding: 4px;
-  color: red;
-}
-</style>
+defineProps({
+  tailwaindClasses: {
+    type: String,
+    default: ""
+  }
+})
+</script>

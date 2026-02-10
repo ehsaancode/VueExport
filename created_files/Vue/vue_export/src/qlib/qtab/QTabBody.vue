@@ -1,23 +1,22 @@
 <template>
-  <div class="q-component-stub QTabBody">
-    QTabBody (Stub)
+  <div v-if="isVisible" :class="tailwaindClasses">
     <slot></slot>
   </div>
 </template>
 
 <script setup>
-// Stub component for QTabBody
-const props = defineProps({
-  tailwaindClasses: String,
-  widgetId: String,
-  // Accept any other props loosely
-});
-</script>
+defineOptions({
+  name: 'QTabBody'
+})
 
-<style scoped>
-.q-component-stub {
-  border: 1px dashed red;
-  padding: 4px;
-  color: red;
-}
-</style>
+defineProps({
+  isVisible: {
+    type: Boolean,
+    default: true
+  },
+  tailwaindClasses: {
+    type: String,
+    default: ""
+  }
+})
+</script>

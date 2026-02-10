@@ -1,5 +1,3 @@
-
-
 const QTabHeader = ({
   onClick,
   isActive,

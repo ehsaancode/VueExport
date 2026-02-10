@@ -229,7 +229,7 @@ class ParserHMenuItem {
       `>\n  <Menu 
     id="${this.jsonObjects["id"]}"
     
-            onMouseEnter={() => handleMouseEnter("${
+            @mouseenter="handleTopMenuEnter("${
               this.jsonObjects[`id`]
             }",[${await commonUtilsReact.getParentIds()}])}
 
