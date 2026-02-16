@@ -26,6 +26,9 @@ const QDiv = ({
   animationDuration,
   animationCurve,
   animationTargetPosition,
+  maxValue,
+  minValue,
+  midValue,
   isRevarsed,
   zIndex,
   tailwaindClasses,
@@ -71,6 +74,8 @@ const QDiv = ({
           isRevarsed,
           maxValue,
           minValue,
+          midValue,
+          
         });
 
         setClasses(divRef.current.className);

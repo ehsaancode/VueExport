@@ -6,7 +6,7 @@ const readWriteFile = require("../../utility/read_write_file");
 const reactStyleProps = require("./react_style_props");
 const reactCommonStyleProps = require("./react_common_style_props");
 const getFormConfigForItem = require("../../mapper/reactjs/reactjs_mapper_form");
-const {removeTransparencyFromHexCode} = require("../../utility/common_utils")
+const { removeTransparencyFromHexCode } = require("../../utility/common_utils");
 const reactJsMapper = require("../../mapper/reactjs/reactjs_mapper");
 const propToStyleKeyMap = require("../../resource/props_mapper.json");
 const stateHandler = require("../../utility/state_handler");
@@ -136,21 +136,21 @@ async function componentFrameWidth(
   parentWidth,
   parentHeight,
   isWidthAutoNull,
-  type = ""
+  type = "",
 ) {
   let frame = "";
   if (jsonObject?.[jsonKeys.widthType] == "px") {
     frame = `\"${
       jsonObject?.[jsonKeys.width] == "auto"
         ? ""
-        : jsonObject?.[jsonKeys.width] ?? ""
+        : (jsonObject?.[jsonKeys.width] ?? "")
     }px\"`;
   } else if (jsonObject?.[jsonKeys.widthType] == "percent") {
     frame = `\"${jsonObject?.[jsonKeys.widthPercent] ?? ""}\"`;
   } else if (jsonObject?.[jsonKeys.widthType] == "vw") {
     frame = `\"${(jsonObject?.[jsonKeys.widthPercent] ?? "").replace(
       "%",
-      "vw"
+      "vw",
     )}\"`;
   } else {
     frame = "";
@@ -164,7 +164,7 @@ async function childFrameWidth(
   parentWidth,
   parentHeight,
   isWidthAutoNull,
-  type = ""
+  type = "",
 ) {
   let frame = "";
   for (const index in jsonObject) {
@@ -202,7 +202,7 @@ async function childFrameWidth(
         parentWidth,
         parentHeight,
         isWidthAutoNull,
-        type
+        type,
       );
       if (frame.length > 0) {
         break;
@@ -219,14 +219,14 @@ async function componentFrameHeight(
   defaultJsonObject,
   parentWidth,
   parentHeight,
-  isHeightAutoNull
+  isHeightAutoNull,
 ) {
   let frame = "";
   if (jsonObject[jsonKeys.heightType] == "px") {
     frame = `\"${
       jsonObject[jsonKeys.height] == "auto"
         ? defaultJsonObject[jsonKeys.height]
-        : jsonObject[jsonKeys.height] ?? defaultJsonObject[jsonKeys.height]
+        : (jsonObject[jsonKeys.height] ?? defaultJsonObject[jsonKeys.height])
     }px\"`;
   } else if (jsonObject[jsonKeys.heightType] == "percent") {
     frame = `\"${
@@ -243,7 +243,7 @@ async function componentFrameHeight(
     frame = `\"${
       jsonObject[jsonKeys.height] == "auto"
         ? defaultJsonObject[jsonKeys.height]
-        : jsonObject[jsonKeys.height] ?? defaultJsonObject[jsonKeys.height]
+        : (jsonObject[jsonKeys.height] ?? defaultJsonObject[jsonKeys.height])
     }px\"`;
   } else if (defaultJsonObject?.[jsonKeys.heightType] == "percent") {
     frame = `\"${
@@ -278,7 +278,7 @@ async function childFrameHeight(
   jsonObject,
   parentWidth,
   parentHeight,
-  isHeightAutoNull
+  isHeightAutoNull,
 ) {
   let frame = "";
   for (const index in jsonObject) {
@@ -315,7 +315,7 @@ async function childFrameHeight(
         jsonObj[jsonKeys.children],
         parentWidth,
         parentHeight,
-        isHeightAutoNull
+        isHeightAutoNull,
       );
       if (frame.length > 0) {
         break;
@@ -351,15 +351,15 @@ async function getFont(jsonObj, defaultObjct) {
   return jsonObj[jsonKeys.fontFamily]
     ? jsonObj[jsonKeys.fontFamily]
     : defaultObjct[jsonKeys.fontFamily]
-    ? defaultObjct[jsonKeys.fontFamily]
-    : "Arial";
+      ? defaultObjct[jsonKeys.fontFamily]
+      : "Arial";
 }
 
 async function hasMenuBar(jsonObjects) {
-  let jsonObj = jsonObjects[jsonKeys.children];
-  for (const index in jsonObj) {
-    let json = jsonObj[index];
-    let objectType = await json[jsonKeys.type];
+  // let jsonObj = jsonObjects[jsonKeys.children];
+  for (const index in jsonObjects?.children) {
+    // let json = jsonObj[index];
+    let objectType = await jsonObjects?.children[index]?.type;
     if (objectType == "QMenuBar") {
       return "success";
     } else {
@@ -384,26 +384,25 @@ async function generateStyleCode(list) {
   ];
 
   let lines = [];
- // console.log('list', list)
+  // console.log('list', list)
 
-    list.forEach(({ prop, stateVariableName, appStateVariableName }) => {
-      if (!prop || (!stateVariableName && !appStateVariableName)) return; // skip invalid
-      if (excludedKeys.includes(prop)) return; // skip excluded keys
+  list.forEach(({ prop, stateVariableName, appStateVariableName }) => {
+    if (!prop || (!stateVariableName && !appStateVariableName)) return; // skip invalid
+    if (excludedKeys.includes(prop)) return; // skip excluded keys
 
-      const styleKey = propToStyleKeyMap[prop];
-      if (!styleKey) return; // skip if no mapping
+    const styleKey = propToStyleKeyMap[prop];
+    if (!styleKey) return; // skip if no mapping
 
-      if (stateVariableName && stateVariableName.trim() !== "") {
-        // page state
-        lines.push(`  ${styleKey}: \`\${${stateVariableName}}\``);
-      } else if (appStateVariableName && appStateVariableName.trim() !== "") {
-        // app state
-        lines.push(`  ${styleKey}: \`\${get('${appStateVariableName}')}\``);
-      }
-    });
+    if (stateVariableName && stateVariableName.trim() !== "") {
+      // page state
+      lines.push(`  ${styleKey}: \`\${${stateVariableName}}\``);
+    } else if (appStateVariableName && appStateVariableName.trim() !== "") {
+      // app state
+      lines.push(`  ${styleKey}: \`\${get('${appStateVariableName}')}\``);
+    }
+  });
 
-console.log(lines.join("\n"));
-
+  console.log(lines.join("\n"));
 
   if (lines.length === 0) {
     return "";
@@ -417,6 +416,26 @@ async function findStateVariable(propKey, list) {
   return item ? item.stateVariableName : "";
 }
 
+// Object pool for reusing prop objects
+const propPool = {
+  pool: [],
+  get() {
+    return this.pool.pop() || { key: "", value: "" };
+  },
+  release(obj) {
+    obj.key = "";
+    obj.value = "";
+    if (this.pool.length < 1000) this.pool.push(obj);
+  },
+  releaseAll(arr) {
+    arr.forEach((obj) => this.release(obj));
+    arr.length = 0;
+  },
+};
+
+// Cache for jsonKeys to avoid repeated property access
+const keysCache = new Map();
+
 async function componentProps(
   jsonObject,
   defaultJsonObject,
@@ -428,7 +447,792 @@ async function componentProps(
   projectId,
   pageId,
   parentId,
-  componentName = ""
+  componentName = "",
+) {
+  if (!jsonObject) return [];
+
+  const type = jsonObject[jsonKeys.type];
+  if (!type) return [];
+
+  // Reuse array instead of creating new one
+  const props = [];
+
+  // Cache frequently accessed paths
+  // const wdd = jsonObject[jsonKeys.widgetDefaultData];
+  // const style = wdd?.[jsonKeys.style];
+  // const wss = style?.[jsonKeys.widgetSpecialStyle];
+  // const dwdd = defaultJsonObject?.[jsonKeys.widgetDefaultData];
+  // const dstyle = dwdd?.[jsonKeys.style];
+  // const dwss = dstyle?.[jsonKeys.widgetSpecialStyle];
+  const dwdd = {}; //defaultJsonObject?.[jsonKeys.widgetDefaultData];
+  const dstyle = {}; //dwdd?.[jsonKeys.style];
+  const dwss = {}; //dstyle?.[jsonKeys.widgetSpecialStyle];
+
+  // Table components - early handling
+  const isTableComponent =
+    type === "QTableWrapper" ||
+    type === "QTable" ||
+    type === "QTableRow" ||
+    type === "TableRows" ||
+    type === "QColumnHeaders";
+
+  if (isTableComponent) {
+    await reactCommonStyleProps.styleProps(commonStyle || "", "", type);
+  }
+
+  // QRepeat - handle early if not this type, skip
+  let variableName = "";
+  if (type === "QRepeat") {
+    const vars = await reactJsMapper.getPropsAndStateVariablesFromWidget(
+      commonUtils?.projectId,
+      commonUtils?.pageId,
+      jsonObject[jsonKeys.id],
+    );
+    variableName = await findStateVariable("repeater_data_source", vars);
+  }
+
+  // Style props - required for all
+  await reactStyleProps.styleProps(
+    jsonObject?.widgetDefaultData?.style || "",
+    dstyle || "",
+    type,
+    jsonObject[jsonKeys.id],
+  );
+
+  const { onClick, action, navigation } = await getOnClickProps(jsonObject);
+
+  // Form handling - only if needed
+  let formInputParsed = null;
+  let textInputType = "";
+  let itemId = "";
+  let formId = "";
+  let readOnly = false;
+  let disabled = false;
+
+  // const needsFormConfig = projectId && pageId && parentId;
+
+  const parts = typeof parentId === "string" ? parentId.split("-") : [];
+
+
+  if ( projectId && pageId && parentId !== 0 && parts.length > 1 ) {
+     
+   // console.log('parentId', parentId)
+
+    if (parts.length < 2) {
+      console.error("parentId format invalid:", parentId);
+      return;
+    }
+
+    const [formId, itemId] = parts;
+
+    const formConfigInfo = await getFormConfigForItem.getFormConfigForItem(
+      projectId,
+      pageId,
+      parentId,
+    );
+
+      //  console.log('formConfigInfo', formConfigInfo)
+
+    if (formConfigInfo) {
+      const rules = formConfigInfo.validation?.rules || [];
+      const config = formConfigInfo.config;
+
+      // Find rules without creating intermediate arrays
+      let regexRule, requiredRule, minRule, maxRule;
+      for (let i = 0; i < rules.length; i++) {
+        const r = rules[i];
+        if (r.type === "regex") regexRule = r;
+        else if (r.type === "required" && r.value === true) requiredRule = r;
+        else if (r.type === "minLength") minRule = r;
+        else if (r.type === "maxLength") maxRule = r;
+      }
+
+      textInputType = config?.type || "";
+      readOnly = config?.inputProps?.readOnly || false;
+      disabled = config?.inputProps?.disabled || false;
+
+      // Only get item config if needed
+      let formattedOptions = null;
+      if (type === "QCheckBox" || type === "QRadio" || type === "QDropdown") {
+        const itemConfig = await getFormConfigForItem.getFormItemConfig(
+          projectId,
+          pageId,
+          jsonObject?.id,
+          type
+        );
+        if (Array.isArray(itemConfig) && itemConfig.length > 0) {
+          formattedOptions = {
+            values: itemConfig.map((item) => ({ l: item.key, v: item.value })),
+          };
+        }
+      }
+
+      formInputParsed = {
+        cms_form_input_Id: itemId,
+        cms_form_Id: formId,
+        cms_form_input_Name:
+          config?.id ||
+          jsonObject?.widgetDefaultData?.style?.typography?.placeHolder
+            ?.value ||
+          "",
+        cms_form_input_Options: formattedOptions || { values: [] },
+        cms_form_input_Required: requiredRule ? "1" : "0",
+        cms_form_input_Required_Msg: requiredRule?.message || "",
+        cms_form_input_Regex: regexRule?.value || "",
+        cms_form_input_Regex_Msg: regexRule?.message || "",
+        cms_form_input_Min: minRule?.value || "",
+        cms_form_input_Min_Msg: minRule?.message || "",
+        cms_form_input_Max: maxRule?.value || "",
+        cms_form_input_Max_Msg: maxRule?.message || "",
+        cms_form_value: formConfigInfo?.value,
+        cms_form_input_On_Change_Validation: formConfigInfo.validation
+          ?.autoValidation
+          ? "1"
+          : "0",
+        trailingIconEnabled: config?.inputProps?.trailingIconEnabled || false,
+        trailingIconAction: config?.inputProps?.trailingIconAction || "",
+      };
+    }
+  }
+
+  // Get style objects once
+  const PropsAndStateVars =
+    await reactJsMapper.getPropsAndStateVariablesFromWidget(
+      commonUtils?.projectId,
+      commonUtils?.pageId,
+      jsonObject?.id,
+    );
+
+  const finalStyleObj = await generateStyleCode(PropsAndStateVars);
+
+  // State for QRepeat
+  let state = null;
+  if (type === "QRepeat") {
+    const handler = stateHandler.getInstance();
+    state = handler.getStateByField(
+      String(commonUtils?.pageId),
+      "widgetId",
+      String(jsonObject?.id),
+    );
+  }
+
+  // Helper to add prop without object allocation
+  const addProp = (key, value) => {
+    if (value !== "" && value != null) {
+      props.push({ key, value });
+    }
+  };
+
+  // Common props - always needed
+  addProp("style", finalStyleObj);
+  addProp("widgetId", jsonObject?.id);
+  addProp(jsonKeys.taggedKey, jsonObject[jsonKeys.taggedKey]);
+  addProp(jsonKeys.onClick, onClick);
+  addProp(jsonKeys.action, action);
+  addProp(jsonKeys.navigation, navigation);
+
+  if ((await hasMenuBar(jsonObject)) === "success") {
+    addProp(jsonKeys.zIndex, 99999);
+  }
+
+  if (parantType === "QStack") {
+    addProp(jsonKeys.isAbsoluteValue, true);
+  }
+
+  // Type-specific props - use switch for better performance
+  switch (type) {
+    case "QLineChart":
+    case "QAreaChart":
+    case "QColumnChart":
+    case "QBarChart":
+    case "QPieChart": {
+      const gl =
+        jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.graphLine;
+      const layout =
+        jsonObject?.widgetDefaultData?.style?.layout?.properties?.flexChild;
+
+      addProp(jsonKeys.childAlign, layout?.childAlign);
+      addProp(jsonKeys.markerSize, gl?.markerSize);
+      addProp(jsonKeys.showLegend, gl?.showLegend);
+      addProp(jsonKeys.xAxisLineWidth, gl?.xAxisLineWidth);
+      addProp(jsonKeys.yAxisLineWidth, gl?.yAxisLineWidth);
+      addProp(jsonKeys.showTooltip, gl?.showTooltip);
+      addProp(jsonKeys.showMarker, gl?.showMarker);
+      addProp(jsonKeys.xAxisLabel, gl?.xAxisLabel);
+      addProp(jsonKeys.yAxisLabel, gl?.yAxisLabel);
+
+      if (type === "QLineChart") {
+        addProp(jsonKeys.xAxisGridLines, gl?.xAxisGridLines);
+        addProp(jsonKeys.yAxisGridLines, gl?.yAxisGridLines);
+      } else if (type === "QPieChart") {
+        const pg =
+          jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.pieGraph;
+        addProp(jsonKeys.pieChartType, pg?.pieChartType);
+        addProp(jsonKeys.tooltipFontSize, pg?.tooltipFontSize);
+        addProp(
+          jsonKeys.tooltipTextColor,
+          removeTransparencyFromHexCode(pg?.tooltipTextColor),
+        );
+        addProp(jsonKeys.tooltipFontWeight, pg?.tooltipFontWeight);
+        addProp(
+          jsonKeys.tooltipBgColor,
+          removeTransparencyFromHexCode(pg?.tooltipBgColor),
+        );
+        addProp(jsonKeys.showTooltipShadow, pg?.showTooltipShadow);
+        addProp(
+          jsonKeys.pieTooltipborderRadiusValueBottomLeft,
+          pg?.pieTooltipborderRadiusValueBottomLeft,
+        );
+        addProp(
+          jsonKeys.pieTooltipborderRadiusType,
+          pg?.pieTooltipborderRadiusType,
+        );
+        addProp(
+          jsonKeys.pieTooltipborderRadiusValueBottomRight,
+          pg?.pieTooltipborderRadiusValueBottomRight,
+        );
+        addProp(
+          jsonKeys.pieTooltipborderRadiusValueTopLeft,
+          pg?.pieTooltipborderRadiusValueTopLeft,
+        );
+        addProp(
+          jsonKeys.pieTooltipborderRadiusValueTopRight,
+          pg?.pieTooltipborderRadiusValueTopRight,
+        );
+        addProp(jsonKeys.legendPosition, pg?.legendPosition);
+      }
+      break;
+    }
+
+    case "QRepeat": {
+      addProp("repeaterDefaultData", state?.name);
+      addProp("loading", "loading");
+      addProp("targetKey", jsonObject?.editorSettings?.taggedKey);
+      break;
+    }
+
+    case "QInputText": {
+      addProp("cms_form_Id", formInputParsed?.cms_form_Id);
+      addProp("cmsFormInputLabel", formInputParsed?.cms_form_input_Id);
+      if (formInputParsed) addProp("errorSet", JSON.stringify(formInputParsed));
+      addProp("readOnly", readOnly);
+      addProp("disabled", disabled);
+      addProp("textInputType", textInputType);
+      addProp(
+        "placeHolder",
+        jsonObject?.widgetDefaultData?.style?.typography?.placeHolder?.value,
+      );
+
+      const ph = jsonObject?.widgetDefaultData?.style?.typography?.placeHolder;
+      if (ph) {
+        const fs = ph.fontSize;
+        if (fs) addProp("placeHolderFontSize", (fs.v || "") + (fs.u || ""));
+        addProp("placeHolderFontWeight", ph.fontWeight);
+        addProp("placeHolderTextColor", commonUtils.hexToRgba(ph.textColor));
+      }
+
+      addProp(
+        "leftPadding",
+        jsonObject?.widgetDefaultData?.style?.spacing?.padding?.left?.v ||
+          "15px",
+      );
+      addProp(
+        "fontSize",
+        jsonObject?.widgetDefaultData?.style?.typography?.text?.fontSize?.v ||
+          "30px",
+      );
+      break;
+    }
+
+    case "QDropdown":
+    case "QCheckBox":
+    case "QRadio": {
+      addProp("cms_form_Id", formInputParsed?.cms_form_Id);
+      addProp("cmsFormInputLabel", formInputParsed?.cms_form_input_Id);
+
+      if (formInputParsed) addProp("errorSet", JSON.stringify(formInputParsed));
+      addProp(
+        "placeHolder",
+        jsonObject?.widgetDefaultData?.style?.typography?.placeHolder?.value,
+      );
+
+      if (type === "QCheckBox" || type === "QRadio") {
+        const cr =
+          jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle
+            ?.checkBoxRadioProperties;
+        if (cr) {
+          addProp("activeColor", commonUtils.hexToRgba(cr.activeColor));
+          addProp("fillColor", commonUtils.hexToRgba(cr.fillColor));
+          addProp("inactiveColor", commonUtils.hexToRgba(cr.inactiveColor));
+          addProp("flexDirection", cr.shape);
+          if (cr.size) addProp("size", (cr.size.v || "") + (cr.size.u || ""));
+          if (cr.radius)
+            addProp("radius", (cr.radius.v || "") + (cr.radius.u || ""));
+        }
+      }
+      break;
+    }
+
+    case "QTextarea": {
+      addProp("cms_form_Id", formInputParsed?.cms_form_Id);
+      addProp("cmsFormInputLabel", formInputParsed?.cms_form_input_Id);
+      if (formInputParsed) addProp("errorSet", JSON.stringify(formInputParsed));
+      addProp(
+        "placeHolder",
+        jsonObject?.widgetDefaultData?.style?.typography?.placeHolder?.value,
+      );
+
+      const fd =
+        jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.formData;
+      addProp("maxWords", fd?.maxWords);
+      addProp("showNumberCount", fd?.showNumberCount);
+      addProp("showResizeButton", fd?.showResizeButton);
+      break;
+    }
+
+    case "QButton": {
+      addProp(
+        jsonKeys.text,
+        jsonObject[jsonKeys.text] || jsonObject[jsonKeys.taggedKey] || "",
+      );
+      addProp(
+        jsonKeys.buttonType,
+        jsonObject?.widgetState?.onClick?.action === "Form Submit"
+          ? "submit"
+          : "button",
+      );
+      addProp(
+        jsonKeys.design,
+        jsonObject[jsonKeys.design] || defaultJsonObject?.[jsonKeys.design],
+      );
+      addProp("tagKey", jsonObject?.editorSettings?.taggedKey);
+      break;
+    }
+
+    case "QIcon": {
+      const iconUseCase =
+        jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.formData
+          ?.useCase;
+      addProp("useCase", iconUseCase);
+      if (iconUseCase === "formValidation")
+        addProp("cms_form_input_Id", formInputParsed?.cms_form_input_Id);
+
+      addProp("cms_form_Id", formInputParsed?.cms_form_Id);
+      addProp(
+        "clickableWidget",
+        jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.icon
+          ?.clickableWidget,
+      );
+      addProp(
+        jsonKeys.iconLink,
+        jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.icon
+          ?.iconUrl || dwss?.icon?.iconUrl,
+      );
+      break;
+    }
+
+    case "QForm": {
+      addProp("cms_form_Id", jsonObject?.id);
+      addProp("apiUrl", "https://jsonplaceholder.typicode.com/posts");
+      break;
+    }
+
+    case "QSlider": {
+      const sl =
+        jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.slider;
+      if (sl) {
+        addProp("sliderDirection", sl.sliderDirection);
+        addProp("sliderIndicatorType", sl.sliderIndicatorType);
+        addProp("sliderArrowVisible", sl.sliderArrowVisible);
+        addProp("arrowActiveColor", commonUtils.hexToRgba(sl.arrowActiveColor));
+        addProp(
+          "arrowDeactivatedColor",
+          commonUtils.hexToRgba(sl.arrowDeactivatedColor),
+        );
+        addProp(
+          "indicatorActiveColor",
+          commonUtils.hexToRgba(sl.indicatorActiveColor),
+        );
+        addProp(
+          "indicatorDeactivatedColor",
+          commonUtils.hexToRgba(sl.indicatorDeactivatedColor),
+        );
+        addProp("indicatorPositionType", sl.indicatorPositionType);
+        addProp("sliderAutoPlay", sl.sliderAutoPlay);
+        addProp("sliderAutoPlayDuration", sl.sliderAutoPlayDuration);
+      }
+      break;
+    }
+
+    case "QGallery":
+    case "QCustomGallery": {
+      const gal =
+        jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.gallery;
+      if (gal) {
+        addProp(jsonKeys.column, gal.column);
+        if (gal.vSpace)
+          addProp(jsonKeys.vSpace, (gal.vSpace.v || "") + (gal.vSpace.u || ""));
+        if (gal.hSpace)
+          addProp(jsonKeys.hSpace, (gal.hSpace.v || "") + (gal.hSpace.u || ""));
+      }
+      break;
+    }
+
+    case "QTabBar": {
+      const tb =
+        jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.tabBar;
+      const dtb = dwss?.tabBar;
+      if (tb || dtb) {
+        addProp("tabDirection", tb?.tabDirection);
+        addProp(
+          "dividerColor",
+          commonUtils.hexToRgba(tb?.dividerColor) ||
+            commonUtils.hexToRgba(dtb?.dividerColor),
+        );
+        addProp(
+          "indicatorColor",
+          commonUtils.hexToRgba(tb?.indicatorColor) ||
+            commonUtils.hexToRgba(dtb?.indicatorColor),
+        );
+
+        const ih = tb?.indicatorHeight || dtb?.indicatorHeight;
+        if (ih) addProp("indicatorHeight", (ih.v || "") + (ih.u || ""));
+
+        const ds = tb?.dividerSize || dtb?.dividerSize;
+        if (ds) addProp("dividerSize", (ds.v || "") + (ds.u || ""));
+
+        const ths = tb?.tabHeaderSize || dtb?.tabHeaderSize;
+        if (ths) addProp("tabHeaderSize", (ths.v || "") + (ths.u || ""));
+      }
+      break;
+    }
+
+    case "QMap": {
+      const gm =
+        jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.googleMap;
+      const dgm = dwss?.googleMap;
+
+      addProp(
+        jsonKeys.zoomControlsEnabled,
+        gm?.zoomControlsEnabled ?? dgm?.zoomControlsEnabled,
+      );
+      addProp(jsonKeys.zoom, gm?.zoom ?? dgm?.zoom);
+      addProp(jsonKeys.pathType, gm?.pathType ?? dgm?.pathType);
+      addProp(
+        jsonKeys.boundaryEnabled,
+        jsonObject[jsonKeys.boundaryEnabled] ??
+          defaultJsonObject?.[jsonKeys.boundaryEnabled],
+      );
+      addProp(
+        jsonKeys.isPolygonEnable,
+        jsonObject[jsonKeys.isPolygonEnable] ??
+          defaultJsonObject?.[jsonKeys.isPolygonEnable],
+      );
+      addProp(
+        jsonKeys.isCircleRadiusEnable,
+        jsonObject[jsonKeys.isCircleRadiusEnable] ??
+          defaultJsonObject?.[jsonKeys.isCircleRadiusEnable],
+      );
+      addProp(
+        jsonKeys.mapKey,
+        jsonObject[jsonKeys.mapKey] ?? defaultJsonObject?.[jsonKeys.mapKey],
+      );
+      addProp(
+        jsonKeys.radiusColor,
+        commonUtils.hexToRgba(jsonObject[jsonKeys.radiusColor]) ??
+          commonUtils.hexToRgba(defaultJsonObject?.[jsonKeys.radiusColor]),
+      );
+      addProp(
+        jsonKeys.polygonColor,
+        commonUtils.hexToRgba(jsonObject[jsonKeys.polygonColor]) ??
+          commonUtils.hexToRgba(defaultJsonObject?.[jsonKeys.polygonColor]),
+      );
+      addProp(jsonKeys.markers, gm?.markers ?? dgm?.markers);
+      addProp(
+        jsonKeys.enableFullScreen,
+        gm?.enableFullScreen ?? dgm?.enableFullScreen,
+      );
+      addProp(jsonKeys.centerMarkers, gm?.centerMarkers ?? dgm?.centerMarkers);
+      break;
+    }
+
+    case "QProgressbarWithPercentage":
+    case "QProgressbarWithStepper":
+    case "QDashedProgressbar":
+    case "QProgressbarWithSlider": {
+      const pb =
+        jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.progressBar;
+      const dpb = dwss?.progressBar;
+
+      addProp(jsonKeys.shape, pb?.shape || dpb?.shape);
+
+      const thickness = pb?.thickness || dpb?.thickness;
+      const thicknessType = pb?.thicknessType || dpb?.thicknessType;
+      if (thickness)
+        addProp(jsonKeys.thickness, thickness + (thicknessType || ""));
+
+      addProp(jsonKeys.step, pb?.step || dpb?.step);
+      addProp(jsonKeys.direction, pb?.direction || dpb?.direction);
+      addProp(
+        jsonKeys.tooltipColor,
+        commonUtils.hexToRgba(pb?.tooltipColor) ||
+          commonUtils.hexToRgba(dpb?.tooltipColor),
+      );
+      addProp(
+        jsonKeys.tooltipBackgroundColor,
+        commonUtils.hexToRgba(pb?.tooltipBackgroundColor) ||
+          commonUtils.hexToRgba(dpb?.tooltipBackgroundColor),
+      );
+      addProp(
+        jsonKeys.tooltipHandleColor,
+        commonUtils.hexToRgba(pb?.tooltipHandleColor) ||
+          commonUtils.hexToRgba(dpb?.tooltipHandleColor),
+      );
+      addProp(
+        jsonKeys.activeColor,
+        commonUtils.hexToRgba(pb?.activeColor) ||
+          commonUtils.hexToRgba(dpb?.activeColor),
+      );
+      addProp(
+        jsonKeys.inActiveColor,
+        commonUtils.hexToRgba(pb?.inActiveColor) ||
+          commonUtils.hexToRgba(dpb?.inActiveColor),
+      );
+      break;
+    }
+
+    case "QVideoNetwork": {
+      const videoUrl =
+        jsonObject?.widgetDefaultData?.style?.background?.media?.videoUrl ||
+        dstyle?.background?.media?.videoUrl;
+      addProp(jsonKeys.videoUrl, videoUrl);
+      break;
+    }
+
+    case "QText": {
+      addProp("tagKey", jsonObject?.editorSettings?.taggedKey);
+      if (
+        jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.formData
+          ?.useCase === "formValidation"
+      ) {
+        addProp("cms_form_input_Id", formInputParsed?.cms_form_input_Id);
+      }
+      break;
+    }
+
+    case "QTextH1":
+    case "QTextH2":
+    case "QTextH3":
+    case "QTextH4":
+    case "QTextH5":
+    case "QTextH6":
+    case "QParagraph":
+    case "QImageNetwork": {
+      addProp("tagKey", jsonObject?.editorSettings?.taggedKey);
+      break;
+    }
+
+    case "QParallax": {
+      addProp(
+        jsonKeys.type,
+        parantType === "QParallaxGroup" ? "Horizontal" : "Vertical",
+      );
+      break;
+    }
+  }
+
+  // Common props applicable to multiple types
+  if (componentName === "QErrorMessage") {
+    addProp("cms_form_Id", formInputParsed?.cms_form_Id);
+    // addProp("cms_form_input_Id", formInputParsed?.cms_form_input_Id);
+  }
+
+  const isPaginationType =
+    parantType === "QTablePaginationButton" ||
+    parantType === "QTablePaginationInfo" ||
+    parantType === "QTablePaginationRPP";
+  if (isPaginationType) {
+    addProp(jsonKeys.Pagination, true);
+  }
+
+  // Image URL
+  const imgUrl =
+    jsonObject[jsonKeys.taggedKey] ||
+    jsonObject[jsonKeys.url] ||
+    defaultJsonObject?.[jsonKeys.url];
+  addProp(jsonKeys.imageUrl, imgUrl);
+
+  // Misc props
+  addProp(jsonKeys.animateType, jsonObject[jsonKeys.animateType]);
+  addProp(jsonKeys.divCount, jsonObject[jsonKeys.divCount]);
+  addProp(jsonKeys.options, jsonObject[jsonKeys.options]);
+  addProp(jsonKeys.endValue, jsonObject[jsonKeys.endValue]);
+
+  // Add style props
+  const styleProps = await reactStyleProps.getStyleProps(
+    String(jsonObject?.id),
+  );
+  for (let i = 0; i < styleProps.length; i++) {
+    const sp = styleProps[i];
+    if (sp.value !== "" && sp.value != null) {
+      props.push(sp);
+    }
+  }
+
+  addProp(
+    "tailwaindClasses",
+    (await reactStyleProps.getTailwaindClasses(String(jsonObject?.id)))?.trim(),
+  );
+
+  // Table component styles
+  if (isTableComponent) {
+    const commonStyleProps = await reactCommonStyleProps.getStyleProps();
+    for (let i = 0; i < commonStyleProps.length; i++) {
+      const csp = commonStyleProps[i];
+      if (csp.value !== "" && csp.value != null) {
+        props.push(csp);
+      }
+    }
+    addProp(
+      "commonTailwaindClasses",
+      (await reactCommonStyleProps.getTailwaindClasses())?.trim(),
+    );
+  }
+
+  // Animation props
+  if (jsonObject?.widgetDefaultData?.style?.animation?.length > 0) {
+    const animProps = extractAnimationProps(
+      jsonObject?.widgetDefaultData?.style?.animation,
+    );
+    for (let i = 0; i < animProps.length; i++) {
+      const ap = animProps[i];
+      if (ap.value !== "" && ap.value != null) {
+        props.push(ap);
+      }
+    }
+  }
+
+  return props;
+}
+
+// Optimized animation extraction
+function extractAnimationProps(data) {
+  if (!data || data.length === 0) return [];
+
+  const props = [];
+  const len = data.length;
+
+  // Pre-allocate string builders
+  const animationType = [];
+  const direction = [];
+  const easing = [];
+  const iterations = [];
+  const delay = [];
+  const reversed = [];
+  const duration = [];
+  const maxValue = [];
+  const minValue = [];
+  const midValue = [];
+
+
+  for (let i = 0; i < len; i++) {
+    const item = data[i];
+
+    if (item.animationType) animationType.push(item.animationType);
+    if (item.direction) direction.push(item.direction);
+    if (item.fillMode) easing.push(item.fillMode.replace(/^easing/, "ease"));
+    if (item.iterationCount) iterations.push(item.iterationCount);
+
+    // Delay conversion
+    const delayVal = item.delay;
+    if (delayVal != null) {
+      const delayUnit = item.delayUnit;
+      let converted = "";
+      const num = parseFloat(delayVal);
+
+      if (delayUnit === "ms") converted = num / 1000 + "s";
+      else if (delayUnit === "m") converted = num * 60 + "s";
+      else if (delayUnit === "hr") converted = num * 3600 + "s";
+      else if (delayUnit === "s") converted = delayVal + "s";
+      else converted = num / 1000 + "s";
+
+      delay.push(converted);
+    }
+
+    reversed.push(item.isReversed === true ? "true" : "false");
+
+    // Duration conversion
+    const durVal = item.duration;
+    if (durVal != null) {
+      const durUnit = item.durationUnit;
+      let converted = "";
+      const num = parseFloat(durVal);
+
+      if (durUnit === "ms") converted = num / 1000 + "s";
+      else if (durUnit === "m") converted = num * 60 + "s";
+      else if (durUnit === "hr") converted = num * 3600 + "s";
+      else if (durUnit === "s") converted = durVal + "s";
+      else {
+        const str = String(durVal);
+        converted = str.endsWith("s") ? str : num / 1000 + "s";
+      }
+
+      duration.push(converted);
+    }
+
+    if (item.maxValue) maxValue.push(item.maxValue);
+    if (item.minValue) minValue.push(item.minValue);
+    if (item.midValue) midValue.push(item.midValue);
+
+  }
+
+  props.push({ key: jsonKeys.isAnimationP, value: "true" });
+  if (animationType.length)
+    props.push({
+      key: jsonKeys.animationType,
+      value: animationType.join(", "),
+    });
+  if (direction.length)
+    props.push({
+      key: jsonKeys.animationDirection,
+      value: direction.join(", ") || "none",
+    });
+  if (easing.length)
+    props.push({ key: jsonKeys.animationEasing, value: easing.join(", ") });
+  if (iterations.length)
+    props.push({
+      key: jsonKeys.animationIterations,
+      value: iterations.join(", "),
+    });
+  if (delay.length)
+    props.push({ key: jsonKeys.animationDelay, value: delay.join(", ") });
+  if (reversed.length)
+    props.push({ key: jsonKeys.isRevarsed, value: reversed.join(", ") });
+  if (duration.length)
+    props.push({ key: jsonKeys.animationDuration, value: duration.join(", ") });
+  if (maxValue.length)
+    props.push({ key: jsonKeys.maxValue, value: maxValue.join(", ") });
+  if (minValue.length)
+    props.push({ key: jsonKeys.minValue, value: minValue.join(", ") });
+  if (midValue.length)
+    props.push({ key: jsonKeys.midValue, value: midValue.join(", ") });
+
+
+  return props;
+}
+
+async function componentProps2(
+  jsonObject,
+  defaultJsonObject,
+  parentWidth,
+  parentHeight,
+  parantType,
+  isAbsoluteValue,
+  commonStyle,
+  projectId,
+  pageId,
+  parentId,
+  componentName = "",
 ) {
   if (
     jsonObject[jsonKeys.type] == "QTableWrapper" ||
@@ -441,22 +1245,30 @@ async function componentProps(
     await reactCommonStyleProps.styleProps(
       commonStyle ?? "",
       "",
-      jsonObject[jsonKeys.type]
+      jsonObject[jsonKeys.type],
     );
   }
 
-  let variableName='';
-  if (jsonObject[jsonKeys.type] == "QRepeat")
-  {
-        let PropsAndStateVariablesFromWidget= await reactJsMapper.getPropsAndStateVariablesFromWidget( commonUtils?.projectId,commonUtils?.pageId, jsonObject[jsonKeys.id]);
-        variableName= await findStateVariable('repeater_data_source', PropsAndStateVariablesFromWidget )
+  let variableName = "";
+  if (jsonObject[jsonKeys.type] == "QRepeat") {
+    let PropsAndStateVariablesFromWidget =
+      await reactJsMapper.getPropsAndStateVariablesFromWidget(
+        commonUtils?.projectId,
+        commonUtils?.pageId,
+        jsonObject[jsonKeys.id],
+      );
+    variableName = await findStateVariable(
+      "repeater_data_source",
+      PropsAndStateVariablesFromWidget,
+    );
+    PropsAndStateVariablesFromWidget = null;
   }
 
   await reactStyleProps.styleProps(
     jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style] ?? "",
     defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style] ?? "",
     jsonObject[jsonKeys.type],
-    jsonObject[jsonKeys.id]
+    jsonObject[jsonKeys.id],
   );
   const { onClick, action, navigation } = await getOnClickProps(jsonObject);
 
@@ -485,20 +1297,20 @@ async function componentProps(
     formConfigInfo = await getFormConfigForItem.getFormConfigForItem(
       projectId,
       pageId,
-      parentId
+      parentId,
     );
 
     const regexRule = formConfigInfo?.validation?.rules?.find(
-      (rule) => rule.type === "regex"
+      (rule) => rule.type === "regex",
     );
     const requiredRule = formConfigInfo?.validation?.rules?.find(
-      (rule) => rule.type === "required" && rule.value === true
+      (rule) => rule.type === "required" && rule.value === true,
     );
     const minRule = formConfigInfo?.validation?.rules?.find(
-      (rule) => rule.type === "minLength"
+      (rule) => rule.type === "minLength",
     );
     const maxRule = formConfigInfo?.validation?.rules?.find(
-      (rule) => rule.type === "maxLength"
+      (rule) => rule.type === "maxLength",
     );
 
     const isRequired = !!requiredRule;
@@ -515,7 +1327,7 @@ async function componentProps(
       formItemConfigInfo = await getFormConfigForItem.getFormItemConfig(
         projectId,
         pageId,
-        jsonObject?.id
+        jsonObject?.id,
       );
     }
 
@@ -531,13 +1343,15 @@ async function componentProps(
       })),
     };
 
-      //  console.log('formConfigInfo', formConfigInfo?.config?.id)
+    //  console.log('formConfigInfo', formConfigInfo?.config?.id)
 
     formInputParsed = {
       cms_form_input_Id: itemId,
       cms_form_Id: formId,
-      cms_form_input_Name: formConfigInfo?.config?.id ?? jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]
-              ?.typography?.placeHolder?.value,
+      cms_form_input_Name:
+        formConfigInfo?.config?.id ??
+        jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.typography
+          ?.placeHolder?.value,
       cms_form_input_Options: formattedOptions,
       cms_form_input_Required: isRequired ? "1" : "0",
       cms_form_input_Required_Msg: isRequired ? requiredRule.message : "",
@@ -572,9 +1386,8 @@ async function componentProps(
   //     jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
   //       jsonKeys.widgetSpecialStyle
   //     ]?.graphLine?.xAxisGridLines
-      
+
   //   );
-    
 
   //   console.log("value:", jsonKeys.showLegend);
   //   console.log(
@@ -611,13 +1424,13 @@ async function componentProps(
       "Column X valuessssssssssssssssssss",
       jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
         jsonKeys.widgetSpecialStyle
-      ]?.graphLine?.xAxisGridLines
+      ]?.graphLine?.xAxisGridLines,
     );
     console.log(
       "Column Y valuessssssssssssssssssss",
       jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
         jsonKeys.widgetSpecialStyle
-      ]?.graphLine?.yAxisGridLines
+      ]?.graphLine?.yAxisGridLines,
     );
   }
 
@@ -633,31 +1446,26 @@ async function componentProps(
     await reactJsMapper.getPropsAndStateVariablesFromWidget(
       commonUtils?.projectId,
       commonUtils?.pageId,
-      jsonObject?.id
+      jsonObject?.id,
     );
-  /*console.log(
-    "PropsAndStateVariablesFromWidget",
-    PropsAndStateVariablesFromWidget
-  );*/
+
   const finalStyleObj = await generateStyleCode(
-    PropsAndStateVariablesFromWidget
+    PropsAndStateVariablesFromWidget,
   );
-   //console.log("finalStyleObj", finalStyleObj);
+  //console.log("finalStyleObj", finalStyleObj);
 
   const handler = stateHandler.getInstance();
-   let state='';
-  if( jsonObject?.type === "QRepeat")
-  {
-          state = handler.getStateByField( String(commonUtils?.pageId),
-                            "widgetId",
-                            String(jsonObject?.id)
-                          );
-  
+  let state = "";
+  if (jsonObject?.type === "QRepeat") {
+    state = handler.getStateByField(
+      String(commonUtils?.pageId),
+      "widgetId",
+      String(jsonObject?.id),
+    );
   }
-  
 
   props = [
-        //combines
+    //combines
     // {
     //   key: jsonKeys.childAlign,
     //   value: chartTypes.includes(jsonObject[jsonKeys.type])
@@ -714,7 +1522,7 @@ async function componentProps(
     //       ]?.[jsonKeys.graphLine]?.yAxisLineWidth
     //     : "",
     // },
-    
+
     //  {
     //   key: jsonKeys.showTooltip,
     //   value: chartTypes.includes(jsonObject[jsonKeys.type])
@@ -748,9 +1556,7 @@ async function componentProps(
     //     : "",
     // },
 
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////area chart
+    ///////////////////////////////////////////////////////////////////////////////////////////////////area chart
     {
       key: jsonKeys.xAxisGridLines,
       value:
@@ -790,7 +1596,7 @@ async function componentProps(
             ]?.graphLine?.yAxisLineWidth
           : "",
     },
-    
+
     {
       key: jsonKeys.showLegend,
       value:
@@ -851,7 +1657,7 @@ async function componentProps(
           : "",
     },
 
-///////////////////////////////////////////////////////////////////////////////////////////////////column chart
+    ///////////////////////////////////////////////////////////////////////////////////////////////////column chart
 
     {
       key: jsonKeys.xAxisGridLines,
@@ -952,9 +1758,8 @@ async function componentProps(
           : "",
     },
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////line chart
-     {
+    ///////////////////////////////////////////////////////////////////////////////////////////////////line chart
+    {
       key: jsonKeys.xAxisGridLines,
       value:
         jsonObject[jsonKeys.type] == "QLineChart"
@@ -1043,7 +1848,7 @@ async function componentProps(
             ]?.graphLine?.showTooltip
           : "",
     },
-    
+
     {
       key: jsonKeys.showMarker,
       value:
@@ -1054,8 +1859,7 @@ async function componentProps(
           : "",
     },
 
-
-///////////////////////////////////////////////////////////////////////////////////////////////////pie chart
+    ///////////////////////////////////////////////////////////////////////////////////////////////////pie chart
     {
       key: jsonKeys.pieChartType,
       value:
@@ -1078,9 +1882,11 @@ async function componentProps(
       key: jsonKeys.tooltipTextColor,
       value:
         jsonObject[jsonKeys.type] == "QPieChart"
-          ? removeTransparencyFromHexCode( jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
-              jsonKeys.widgetSpecialStyle
-            ]?.pieGraph?.tooltipTextColor ?? "") //need fallback
+          ? removeTransparencyFromHexCode(
+              jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
+                jsonKeys.widgetSpecialStyle
+              ]?.pieGraph?.tooltipTextColor ?? "",
+            ) //need fallback
           : "",
     },
     {
@@ -1096,13 +1902,14 @@ async function componentProps(
       key: jsonKeys.tooltipBgColor,
       value:
         jsonObject[jsonKeys.type] == "QPieChart"
-          ? removeTransparencyFromHexCode(jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
-            jsonKeys.widgetSpecialStyle
-          ]?.pieGraph?.tooltipBgColor ?? "")
+          ? removeTransparencyFromHexCode(
+              jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
+                jsonKeys.widgetSpecialStyle
+              ]?.pieGraph?.tooltipBgColor ?? "",
+            )
           : "", //needed fallback
     },
 
-    
     {
       key: jsonKeys.showTooltipShadow,
       value:
@@ -1167,21 +1974,16 @@ async function componentProps(
           : "",
     },
 
-///////////////////////////////////////
-    
+    ///////////////////////////////////////
 
     {
       key: "repeaterDefaultData",
-      value:
-        jsonObject?.type === "QRepeat"
-          ? state?.name : ''
+      value: jsonObject?.type === "QRepeat" ? state?.name : "",
     },
 
     {
       key: "loading",
-      value:
-        jsonObject?.type === "QRepeat"
-          ? 'loading' : ''
+      value: jsonObject?.type === "QRepeat" ? "loading" : "",
     },
 
     {
@@ -1213,14 +2015,14 @@ async function componentProps(
         jsonObject[jsonKeys.type] === "QForm"
           ? jsonObject?.id
           : jsonObject[jsonKeys.type] == "QInputText" ||
-            jsonObject[jsonKeys.type] == "QDropdown" ||
-            jsonObject[jsonKeys.type] == "QCheckBox" ||
-            jsonObject[jsonKeys.type] == "QRadio" ||
-            jsonObject[jsonKeys.type] === "QTextarea" ||
-            jsonObject[jsonKeys.type] === "QIcon" ||
-            componentName === "QErrorMessage"
-          ? formId
-          : "",
+              jsonObject[jsonKeys.type] == "QDropdown" ||
+              jsonObject[jsonKeys.type] == "QCheckBox" ||
+              jsonObject[jsonKeys.type] == "QRadio" ||
+              jsonObject[jsonKeys.type] === "QTextarea" ||
+              jsonObject[jsonKeys.type] === "QIcon" ||
+              componentName === "QErrorMessage"
+            ? formId
+            : "",
     },
 
     {
@@ -1324,7 +2126,7 @@ async function componentProps(
         jsonObject[jsonKeys.type] == "QInputText"
           ? commonUtils.hexToRgba(
               jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]
-                ?.typography?.placeHolder?.textColor
+                ?.typography?.placeHolder?.textColor,
             )
           : "",
     },
@@ -1369,7 +2171,7 @@ async function componentProps(
       key: jsonKeys.text,
       value:
         jsonObject[jsonKeys.type] == "QButton"
-          ? jsonObject[jsonKeys.text] ?? jsonObject[jsonKeys.taggedKey] ?? ""
+          ? (jsonObject[jsonKeys.text] ?? jsonObject[jsonKeys.taggedKey] ?? "")
           : "",
     },
 
@@ -1387,7 +2189,7 @@ async function componentProps(
       key: jsonKeys.design,
       value:
         jsonObject[jsonKeys.type] == "QButton"
-          ? jsonObject[jsonKeys.design] ?? defaultJsonObject[jsonKeys.design]
+          ? (jsonObject[jsonKeys.design] ?? defaultJsonObject[jsonKeys.design])
           : "",
     },
 
@@ -1396,8 +2198,8 @@ async function componentProps(
       value: jsonObject[jsonKeys.taggedKey]
         ? jsonObject[jsonKeys.taggedKey]
         : jsonObject[jsonKeys.url]
-        ? jsonObject[jsonKeys.url]
-        : defaultJsonObject?.[jsonKeys.url] ?? "",
+          ? jsonObject[jsonKeys.url]
+          : (defaultJsonObject?.[jsonKeys.url] ?? ""),
     },
 
     {
@@ -1466,7 +2268,7 @@ async function componentProps(
           ? commonUtils.hexToRgba(
               jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
                 jsonKeys.widgetSpecialStyle
-              ]?.slider?.arrowActiveColor  
+              ]?.slider?.arrowActiveColor,
             )
           : "",
     },
@@ -1478,7 +2280,7 @@ async function componentProps(
           ? commonUtils.hexToRgba(
               jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
                 jsonKeys.widgetSpecialStyle
-              ]?.slider?.arrowDeactivatedColor
+              ]?.slider?.arrowDeactivatedColor,
             )
           : "",
     },
@@ -1490,7 +2292,7 @@ async function componentProps(
           ? commonUtils.hexToRgba(
               jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
                 jsonKeys.widgetSpecialStyle
-              ]?.slider?.indicatorActiveColor
+              ]?.slider?.indicatorActiveColor,
             )
           : "",
     },
@@ -1502,7 +2304,7 @@ async function componentProps(
           ? commonUtils.hexToRgba(
               jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
                 jsonKeys.widgetSpecialStyle
-              ]?.slider?.indicatorDeactivatedColor
+              ]?.slider?.indicatorDeactivatedColor,
             )
           : "",
     },
@@ -1595,14 +2397,14 @@ async function componentProps(
       key: "dividerColor",
       value:
         jsonObject["type"] == "QTabBar"
-          ? commonUtils.hexToRgba(
+          ? (commonUtils.hexToRgba(
               jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.tabBar
-                ?.dividerColor
+                ?.dividerColor,
             ) ??
             commonUtils.hexToRgba(
               defaultJsonObject?.widgetDefaultData?.style?.widgetSpecialStyle
-                ?.tabBar?.dividerColor
-            )
+                ?.tabBar?.dividerColor,
+            ))
           : "",
     },
 
@@ -1610,14 +2412,14 @@ async function componentProps(
       key: "indicatorColor",
       value:
         jsonObject["type"] == "QTabBar"
-          ? commonUtils.hexToRgba(
+          ? (commonUtils.hexToRgba(
               jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle?.tabBar
-                ?.indicatorColor
+                ?.indicatorColor,
             ) ??
             commonUtils.hexToRgba(
               defaultJsonObject?.widgetDefaultData?.style?.widgetSpecialStyle
-                ?.tabBar?.indicatorColor
-            )
+                ?.tabBar?.indicatorColor,
+            ))
           : "",
     },
 
@@ -1676,12 +2478,12 @@ async function componentProps(
       key: jsonKeys?.videoUrl ?? "",
       value:
         jsonObject[jsonKeys?.type] == "QVideoNetwork"
-          ? jsonObject?.[jsonKeys?.widgetDefaultData]?.[jsonKeys?.style]?.[
+          ? (jsonObject?.[jsonKeys?.widgetDefaultData]?.[jsonKeys?.style]?.[
               jsonKeys?.background
             ]?.[jsonKeys?.media][jsonKeys?.videoUrl] ??
             defaultJsonObject?.[jsonKeys?.widgetDefaultData]?.[
               jsonKeys?.style
-            ]?.[jsonKeys?.background]?.[jsonKeys?.media][jsonKeys?.videoUrl]
+            ]?.[jsonKeys?.background]?.[jsonKeys?.media][jsonKeys?.videoUrl])
           : "",
     },
 
@@ -1689,12 +2491,12 @@ async function componentProps(
       key: jsonKeys.iconLink,
       value:
         jsonObject[jsonKeys.type] == "QIcon"
-          ? jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
+          ? (jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
             ]?.[jsonKeys.icon]?.[jsonKeys.iconUrl] ??
             defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
-            ]?.[jsonKeys.icon]?.[jsonKeys.iconUrl]
+            ]?.[jsonKeys.icon]?.[jsonKeys.iconUrl])
           : "",
     },
 
@@ -1702,12 +2504,12 @@ async function componentProps(
       key: jsonKeys.zoomControlsEnabled,
       value:
         jsonObject[jsonKeys.type] == "QMap"
-          ? jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
+          ? (jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
             ]?.[jsonKeys.googleMap][jsonKeys.zoomControlsEnabled] ??
             defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
-            ]?.[jsonKeys.googleMap][jsonKeys.zoomControlsEnabled]
+            ]?.[jsonKeys.googleMap][jsonKeys.zoomControlsEnabled])
           : "",
     },
 
@@ -1715,12 +2517,12 @@ async function componentProps(
       key: jsonKeys.zoom,
       value:
         jsonObject[jsonKeys.type] == "QMap"
-          ? jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
+          ? (jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
             ]?.[jsonKeys.googleMap][jsonKeys.zoom] ??
             defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
-            ]?.[jsonKeys.googleMap][jsonKeys.zoom]
+            ]?.[jsonKeys.googleMap][jsonKeys.zoom])
           : "",
     },
 
@@ -1728,12 +2530,12 @@ async function componentProps(
       key: jsonKeys.pathType,
       value:
         jsonObject[jsonKeys.type] == "QMap"
-          ? jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
+          ? (jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
             ]?.[jsonKeys.googleMap][jsonKeys.pathType] ??
             defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
-            ]?.[jsonKeys.googleMap][jsonKeys.pathType]
+            ]?.[jsonKeys.googleMap][jsonKeys.pathType])
           : "",
     },
 
@@ -1741,8 +2543,8 @@ async function componentProps(
       key: jsonKeys.boundaryEnabled,
       value:
         jsonObject[jsonKeys.type] == "QMap"
-          ? jsonObject[jsonKeys.boundaryEnabled] ??
-            defaultJsonObject[jsonKeys.boundaryEnabled]
+          ? (jsonObject[jsonKeys.boundaryEnabled] ??
+            defaultJsonObject[jsonKeys.boundaryEnabled])
           : "",
     },
 
@@ -1750,8 +2552,8 @@ async function componentProps(
       key: jsonKeys.isPolygonEnable,
       value:
         jsonObject[jsonKeys.type] == "QMap"
-          ? jsonObject[jsonKeys.isPolygonEnable] ??
-            defaultJsonObject[jsonKeys.isPolygonEnable]
+          ? (jsonObject[jsonKeys.isPolygonEnable] ??
+            defaultJsonObject[jsonKeys.isPolygonEnable])
           : "",
     },
 
@@ -1759,8 +2561,8 @@ async function componentProps(
       key: jsonKeys.isCircleRadiusEnable,
       value:
         jsonObject[jsonKeys.type] == "QMap"
-          ? jsonObject[jsonKeys.isCircleRadiusEnable] ??
-            defaultJsonObject[jsonKeys.isCircleRadiusEnable]
+          ? (jsonObject[jsonKeys.isCircleRadiusEnable] ??
+            defaultJsonObject[jsonKeys.isCircleRadiusEnable])
           : "",
     },
 
@@ -1768,7 +2570,7 @@ async function componentProps(
       key: jsonKeys.mapKey,
       value:
         jsonObject[jsonKeys.type] == "QMap"
-          ? jsonObject[jsonKeys.mapKey] ?? defaultJsonObject[jsonKeys.mapKey]
+          ? (jsonObject[jsonKeys.mapKey] ?? defaultJsonObject[jsonKeys.mapKey])
           : "",
     },
 
@@ -1776,8 +2578,8 @@ async function componentProps(
       key: jsonKeys.radiusColor,
       value:
         jsonObject[jsonKeys.type] == "QMap"
-          ? commonUtils.hexToRgba(jsonObject[jsonKeys.radiusColor]) ??
-            commonUtils.hexToRgba(defaultJsonObject[jsonKeys.radiusColor])
+          ? (commonUtils.hexToRgba(jsonObject[jsonKeys.radiusColor]) ??
+            commonUtils.hexToRgba(defaultJsonObject[jsonKeys.radiusColor]))
           : "",
     },
 
@@ -1785,8 +2587,8 @@ async function componentProps(
       key: jsonKeys.polygonColor,
       value:
         jsonObject[jsonKeys.type] == "QMap"
-          ? commonUtils.hexToRgba(jsonObject[jsonKeys.polygonColor]) ??
-            commonUtils.hexToRgba(defaultJsonObject[jsonKeys.polygonColor])
+          ? (commonUtils.hexToRgba(jsonObject[jsonKeys.polygonColor]) ??
+            commonUtils.hexToRgba(defaultJsonObject[jsonKeys.polygonColor]))
           : "",
     },
 
@@ -1794,24 +2596,24 @@ async function componentProps(
       key: jsonKeys.markers,
       value:
         jsonObject[jsonKeys.type] == "QMap"
-          ? jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
+          ? (jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
             ]?.[jsonKeys.googleMap][jsonKeys.markers] ??
             defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
-            ]?.[jsonKeys.googleMap][jsonKeys.markers]
+            ]?.[jsonKeys.googleMap][jsonKeys.markers])
           : "",
     },
     {
       key: jsonKeys.enableFullScreen,
       value:
         jsonObject[jsonKeys.type] == "QMap"
-          ? jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
+          ? (jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
             ]?.[jsonKeys.googleMap][jsonKeys.enableFullScreen] ??
             defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
-            ]?.[jsonKeys.googleMap][jsonKeys.enableFullScreen]
+            ]?.[jsonKeys.googleMap][jsonKeys.enableFullScreen])
           : "",
     },
 
@@ -1819,12 +2621,12 @@ async function componentProps(
       key: jsonKeys.centerMarkers,
       value:
         jsonObject[jsonKeys.type] == "QMap"
-          ? jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
+          ? (jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
             ]?.[jsonKeys.googleMap][jsonKeys.centerMarkers] ??
             defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
-            ]?.googleMap[jsonKeys.centerMarkers]
+            ]?.googleMap[jsonKeys.centerMarkers])
           : "",
     },
 
@@ -1843,7 +2645,7 @@ async function componentProps(
         jsonObject[jsonKeys.type] === "QRadio"
           ? commonUtils.hexToRgba(
               jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle
-                ?.checkBoxRadioProperties?.activeColor
+                ?.checkBoxRadioProperties?.activeColor,
             )
           : "",
     },
@@ -1855,7 +2657,7 @@ async function componentProps(
         jsonObject[jsonKeys.type] === "QRadio"
           ? commonUtils.hexToRgba(
               jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle
-                ?.checkBoxRadioProperties?.fillColor
+                ?.checkBoxRadioProperties?.fillColor,
             )
           : "",
     },
@@ -1867,7 +2669,7 @@ async function componentProps(
         jsonObject[jsonKeys.type] === "QRadio"
           ? commonUtils.hexToRgba(
               jsonObject?.widgetDefaultData?.style?.widgetSpecialStyle
-                ?.checkBoxRadioProperties?.inactiveColor
+                ?.checkBoxRadioProperties?.inactiveColor,
             )
           : "",
     },
@@ -1952,12 +2754,12 @@ async function componentProps(
         jsonObject[jsonKeys.type] == "QProgressbarWithStepper" ||
         jsonObject[jsonKeys.type] == "QDashedProgressbar" ||
         jsonObject[jsonKeys.type] == "QProgressbarWithSlider"
-          ? jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
+          ? (jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
             ]?.[jsonKeys.progressBar][jsonKeys.shape] ??
             defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
-            ]?.[jsonKeys.progressBar][jsonKeys.shape]
+            ]?.[jsonKeys.progressBar][jsonKeys.shape])
           : "",
     },
 
@@ -1997,12 +2799,12 @@ async function componentProps(
         jsonObject[jsonKeys.type] == "QProgressbarWithStepper" ||
         jsonObject[jsonKeys.type] == "QDashedProgressbar" ||
         jsonObject[jsonKeys.type] == "QProgressbarWithSlider"
-          ? jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
+          ? (jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
             ]?.[jsonKeys.progressBar][jsonKeys.step] ??
             defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
-            ]?.[jsonKeys.progressBar][jsonKeys.step]
+            ]?.[jsonKeys.progressBar][jsonKeys.step])
           : "",
     },
 
@@ -2013,12 +2815,12 @@ async function componentProps(
         jsonObject[jsonKeys.type] == "QProgressbarWithStepper" ||
         jsonObject[jsonKeys.type] == "QDashedProgressbar" ||
         jsonObject[jsonKeys.type] == "QProgressbarWithSlider"
-          ? jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
+          ? (jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
             ]?.[jsonKeys.progressBar][jsonKeys.direction] ??
             defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
               jsonKeys.widgetSpecialStyle
-            ]?.[jsonKeys.progressBar][jsonKeys.direction]
+            ]?.[jsonKeys.progressBar][jsonKeys.direction])
           : "",
     },
 
@@ -2029,18 +2831,18 @@ async function componentProps(
         jsonObject[jsonKeys.type] == "QProgressbarWithStepper" ||
         jsonObject[jsonKeys.type] == "QDashedProgressbar" ||
         jsonObject[jsonKeys.type] == "QProgressbarWithSlider"
-          ? commonUtils.hexToRgba(
+          ? (commonUtils.hexToRgba(
               jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
                 jsonKeys.widgetSpecialStyle
-              ]?.[jsonKeys.progressBar][jsonKeys.tooltipColor]
+              ]?.[jsonKeys.progressBar][jsonKeys.tooltipColor],
             ) ??
             commonUtils.hexToRgba(
               defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[
                 jsonKeys.style
               ]?.[jsonKeys.widgetSpecialStyle]?.[jsonKeys.progressBar][
                 jsonKeys.tooltipColor
-              ]
-            )
+              ],
+            ))
           : "",
     },
 
@@ -2051,18 +2853,18 @@ async function componentProps(
         jsonObject[jsonKeys.type] == "QProgressbarWithStepper" ||
         jsonObject[jsonKeys.type] == "QDashedProgressbar" ||
         jsonObject[jsonKeys.type] == "QProgressbarWithSlider"
-          ? commonUtils.hexToRgba(
+          ? (commonUtils.hexToRgba(
               jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
                 jsonKeys.widgetSpecialStyle
-              ]?.[jsonKeys.progressBar][jsonKeys.tooltipBackgroundColor]
+              ]?.[jsonKeys.progressBar][jsonKeys.tooltipBackgroundColor],
             ) ??
             commonUtils.hexToRgba(
               defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[
                 jsonKeys.style
               ]?.[jsonKeys.widgetSpecialStyle]?.[jsonKeys.progressBar][
                 jsonKeys.tooltipBackgroundColor
-              ]
-            )
+              ],
+            ))
           : "",
     },
 
@@ -2073,18 +2875,18 @@ async function componentProps(
         jsonObject[jsonKeys.type] == "QProgressbarWithStepper" ||
         jsonObject[jsonKeys.type] == "QDashedProgressbar" ||
         jsonObject[jsonKeys.type] == "QProgressbarWithSlider"
-          ? commonUtils.hexToRgba(
+          ? (commonUtils.hexToRgba(
               jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
                 jsonKeys.widgetSpecialStyle
-              ]?.[jsonKeys.progressBar][jsonKeys.tooltipHandleColor]
+              ]?.[jsonKeys.progressBar][jsonKeys.tooltipHandleColor],
             ) ??
             commonUtils.hexToRgba(
               defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[
                 jsonKeys.style
               ]?.[jsonKeys.widgetSpecialStyle]?.[jsonKeys.progressBar][
                 jsonKeys.tooltipHandleColor
-              ]
-            )
+              ],
+            ))
           : "",
     },
 
@@ -2095,18 +2897,18 @@ async function componentProps(
         jsonObject[jsonKeys.type] == "QProgressbarWithStepper" ||
         jsonObject[jsonKeys.type] == "QDashedProgressbar" ||
         jsonObject[jsonKeys.type] == "QProgressbarWithSlider"
-          ? commonUtils.hexToRgba(
+          ? (commonUtils.hexToRgba(
               jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
                 jsonKeys.widgetSpecialStyle
-              ]?.[jsonKeys.progressBar][jsonKeys.activeColor]
+              ]?.[jsonKeys.progressBar][jsonKeys.activeColor],
             ) ??
             commonUtils.hexToRgba(
               defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[
                 jsonKeys.style
               ]?.[jsonKeys.widgetSpecialStyle]?.[jsonKeys.progressBar][
                 jsonKeys.activeColor
-              ]
-            )
+              ],
+            ))
           : "",
     },
 
@@ -2117,18 +2919,18 @@ async function componentProps(
         jsonObject[jsonKeys.type] == "QProgressbarWithStepper" ||
         jsonObject[jsonKeys.type] == "QDashedProgressbar" ||
         jsonObject[jsonKeys.type] == "QProgressbarWithSlider"
-          ? commonUtils.hexToRgba(
+          ? (commonUtils.hexToRgba(
               jsonObject?.[jsonKeys.widgetDefaultData]?.[jsonKeys.style]?.[
                 jsonKeys.widgetSpecialStyle
-              ]?.[jsonKeys.progressBar][jsonKeys.inActiveColor]
+              ]?.[jsonKeys.progressBar][jsonKeys.inActiveColor],
             ) ??
             commonUtils.hexToRgba(
               defaultJsonObject?.[jsonKeys.widgetDefaultData]?.[
                 jsonKeys.style
               ]?.[jsonKeys.widgetSpecialStyle]?.[jsonKeys.progressBar][
                 jsonKeys.inActiveColor
-              ]
-            )
+              ],
+            ))
           : "",
     },
 
@@ -2199,7 +3001,9 @@ async function componentProps(
             if (unit === "hr") return parseFloat(val) * 3600 + "s";
             if (unit === "s") return val + "s";
 
-            return val ? parseFloat(`${val}`.replace(/[a-zA-Z]/g, "")) / 1000 + "s" : "";
+            return val
+              ? parseFloat(`${val}`.replace(/[a-zA-Z]/g, "")) / 1000 + "s"
+              : "";
           })
           .filter(Boolean)
           .join(", "),
@@ -2233,7 +3037,7 @@ async function componentProps(
       },
 
       //added scale animation
-       {
+      {
         key: jsonKeys.maxValue,
         value: mapJoin("maxValue"),
       },
@@ -2244,12 +3048,12 @@ async function componentProps(
     ];
   };
 
-  props = props.concat(await reactStyleProps.getStyleProps());
+  /*props = props.concat(await reactStyleProps.getStyleProps());
 
   props.push({
     key: "tailwaindClasses",
     value: (await reactStyleProps.getTailwaindClasses())?.trim(),
-  });
+  });*/
 
   if (
     jsonObject[jsonKeys.type] == "QTableWrapper" ||
@@ -2288,7 +3092,7 @@ const generateJSX = async ({
   defaultObject,
 }) => {
   let jsxString = " ";
-  const tailwind = props.find(item => item.key === "tailwaindClasses")?.value;
+  const tailwind = props.find((item) => item.key === "tailwaindClasses")?.value;
 
   const isTextComponent = [
     "QTextH1",
@@ -2298,7 +3102,7 @@ const generateJSX = async ({
     "QTextH5",
     "QTextH6",
     "QParagraph",
-    "QRepeat"
+    "QRepeat",
   ].includes(componentName);
 
   let backgroundType = "";
@@ -2323,7 +3127,11 @@ const generateJSX = async ({
 
     backgroundType = foreground?.[jsonKeys.backgroundType] ?? "";
 
-    if (backgroundType === "linear" || backgroundType === "radial" || componentName=='QRepeat') {
+    if (
+      backgroundType === "linear" ||
+      backgroundType === "radial" ||
+      componentName == "QRepeat"
+    ) {
       jsxString += " ".repeat(startingIndent) + `<QDiv\n`;
 
       let bgColor = "";
@@ -2332,10 +3140,10 @@ const generateJSX = async ({
         case "solid": {
           bgColor =
             commonUtils.hexToRgba(
-              background?.[jsonKeys.solid]?.[jsonKeys.color]
+              background?.[jsonKeys.solid]?.[jsonKeys.color],
             ) ??
             commonUtils.hexToRgba(
-              defaultBackground?.[jsonKeys.solid]?.[jsonKeys.color]
+              defaultBackground?.[jsonKeys.solid]?.[jsonKeys.color],
             );
 
           break;
@@ -2346,7 +3154,7 @@ const generateJSX = async ({
           const color1 = commonUtils.hexToRgba(
             background?.[jsonKeys.linearGradient]?.[jsonKeys.colors]?.[0]?.[
               jsonKeys.color
-            ] ?? ""
+            ] ?? "",
           );
           const stop1 =
             background?.[jsonKeys.linearGradient]?.[jsonKeys.colors]?.[0]?.[
@@ -2356,7 +3164,7 @@ const generateJSX = async ({
           const color2 = commonUtils.hexToRgba(
             background?.[jsonKeys.linearGradient]?.[jsonKeys.colors]?.[1]?.[
               jsonKeys.color
-            ] ?? ""
+            ] ?? "",
           );
           const stop2 =
             background?.[jsonKeys.linearGradient]?.[jsonKeys.colors]?.[1]?.[
@@ -2373,23 +3181,25 @@ const generateJSX = async ({
 
           const size = await getValueWithUnit(
             background?.[jsonKeys.radialGradient]?.[jsonKeys.size],
-            defaultBackground?.[jsonKeys.radialGradient]?.[jsonKeys.size]
+            defaultBackground?.[jsonKeys.radialGradient]?.[jsonKeys.size],
           );
 
           const posX = await getValueWithUnit(
             background?.[jsonKeys.radialGradient]?.[jsonKeys.position]?.x,
-            defaultBackground?.[jsonKeys.radialGradient]?.[jsonKeys.position]?.x
+            defaultBackground?.[jsonKeys.radialGradient]?.[jsonKeys.position]
+              ?.x,
           );
 
           const posY = await getValueWithUnit(
             background?.[jsonKeys.radialGradient]?.[jsonKeys.position]?.y,
-            defaultBackground?.[jsonKeys.radialGradient]?.[jsonKeys.position]?.y
+            defaultBackground?.[jsonKeys.radialGradient]?.[jsonKeys.position]
+              ?.y,
           );
 
           const color1 = commonUtils.hexToRgba(
             background?.[jsonKeys.radialGradient]?.[jsonKeys.colors]?.[0]?.[
               jsonKeys.color
-            ] ?? ""
+            ] ?? "",
           );
           const stop1 =
             background?.[jsonKeys.radialGradient]?.[jsonKeys.colors]?.[0]?.[
@@ -2399,7 +3209,7 @@ const generateJSX = async ({
           const color2 = commonUtils.hexToRgba(
             background?.[jsonKeys.radialGradient]?.[jsonKeys.colors]?.[1]?.[
               jsonKeys.color
-            ] ?? ""
+            ] ?? "",
           );
           const stop2 =
             background?.[jsonKeys.radialGradient]?.[jsonKeys.colors]?.[1]?.[
@@ -2414,16 +3224,15 @@ const generateJSX = async ({
           break;
       }
 
-      if(componentName=='QRepeat')
-      {
-            jsxString += " ".repeat(startingIndent + 2) + `tailwaindClasses="${tailwind}"\n`;
-            jsxString += " ".repeat(startingIndent) + `>\n`; // Close opening tag
-      }else {
-          jsxString += " ".repeat(startingIndent + 2) + `bgColor="${bgColor}"\n`;
-          jsxString += " ".repeat(startingIndent) + `>\n`; // Close opening tag
+      if (componentName == "QRepeat") {
+        jsxString +=
+          " ".repeat(startingIndent + 2) + `tailwaindClasses="${tailwind}"\n`;
+        jsxString += " ".repeat(startingIndent) + `>\n`; // Close opening tag
+      } else {
+        jsxString += " ".repeat(startingIndent + 2) + `bgColor="${bgColor}"\n`;
+        jsxString += " ".repeat(startingIndent) + `>\n`; // Close opening tag
       }
 
-    
       // Append children here...
     }
   }
@@ -2504,14 +3313,14 @@ const generateJSX = async ({
 
 async function getComponentNameByPageId(pageId) {
   const refComponent = components.find(
-    (component) => Number(component.pageId) === Number(pageId)
+    (component) => Number(component.pageId) === Number(pageId),
   );
   return refComponent ? refComponent.componentName : "";
 }
 
 async function getElementNameByPageId(pageId) {
   const refElement = elements.find(
-    (element) => Number(element.pageId) === Number(pageId)
+    (element) => Number(element.pageId) === Number(pageId),
   );
   return refElement ? refElement.componentName : "";
 }

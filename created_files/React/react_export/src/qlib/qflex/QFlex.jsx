@@ -27,6 +27,9 @@ const QFlex = ({
   animationCurve,
   animationTargetPosition,
   isRevarsed,
+  maxValue,
+  minValue,
+  midValue,
 
   zIndex,
   tailwaindClasses,
@@ -70,6 +73,9 @@ const QFlex = ({
           animationDelay,
           animationDuration,
           isRevarsed,
+          maxValue,
+          minValue,
+          midValue,
         });
 
         setClasses(divRef.current.className);

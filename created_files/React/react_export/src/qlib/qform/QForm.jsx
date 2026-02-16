@@ -33,6 +33,9 @@ const QForm = ({
   animationTargetPosition,
   isRevarsed,
   zIndex,
+  maxValue,
+  minValue,
+  midValue,
 
   // Events
   onSubmit,
@@ -74,6 +77,9 @@ const QForm = ({
           animationDelay,
           animationDuration,
           isRevarsed,
+          maxValue,
+          minValue,
+          midValue,
         });
         setClasses(formRef.current.className);
       }

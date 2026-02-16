@@ -30,6 +30,7 @@ const QTextH1 = ({
   isRevarsed,
   maxValue,
   minValue,
+  midValue,
   overflow = "",
   zIndex,
   tailwaindClasses,
@@ -81,6 +82,7 @@ const QTextH1 = ({
         isRevarsed,
         maxValue,
         minValue,
+        midValue,
         animationDuration,
       });
     }

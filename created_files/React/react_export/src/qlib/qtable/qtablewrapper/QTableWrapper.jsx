@@ -51,6 +51,9 @@ const QTableWrapper = ({
       overflow,
       onClick,
       zIndex,
+      maxValue,
+      minValue,
+      midValue,
     }),
   };
 

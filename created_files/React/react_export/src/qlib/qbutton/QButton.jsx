@@ -27,6 +27,7 @@ const QButton = ({
   // Animation Props
   maxValue,
   minValue,
+  midValue,
   isAnimationP,
   animationEasing,
   animationDirection,
@@ -91,6 +92,7 @@ const QButton = ({
         animationDuration,
         maxValue,
         minValue,
+        midValue
       });
     }
   }, [isVisible]);

@@ -2192,7 +2192,9 @@ async function componentProps(
             if (unit === "hr") return parseFloat(val) * 3600 + "s";
             if (unit === "s") return val + "s";
 
-            return val ? parseFloat(`${val}`.replace(/[a-zA-Z]/g, "")) / 1000 + "s" : "";
+            return val
+              ? parseFloat(`${val}`.replace(/[a-zA-Z]/g, "")) / 1000 + "s"
+              : "";
           })
           .filter(Boolean)
           .join(", "),
@@ -2234,8 +2236,13 @@ async function componentProps(
         key: jsonKeys.minValue,
         value: mapJoin("minValue"),
       },
+      {
+        key: jsonKeys.midValue,
+        value: mapJoin("midValue"),
+      },
     ];
   };
+
 
   props = props.concat(await reactStyleProps.getStyleProps());
 

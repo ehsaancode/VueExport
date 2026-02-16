@@ -27,6 +27,9 @@ const QRow = ({
   animationCurve,
   animationTargetPosition,
   isRevarsed,
+  maxValue,
+  minValue,
+  midValue,
 
   zIndex,
   tailwaindClasses,
@@ -68,6 +71,9 @@ const QRow = ({
         animationDelay,
         animationDuration,
         isRevarsed,
+        maxValue,
+        minValue,
+        midValue,
       });
     }
   }, [isVisible]);

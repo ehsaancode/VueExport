@@ -302,6 +302,7 @@ const QIcon = ({
   isRevarsed,
   maxValue,
   minValue,
+  midValue,
   shadowOffsetX,
   shadowOffsetY,
   shadowBlurRadius,
@@ -374,6 +375,7 @@ const QIcon = ({
         isRevarsed,
         maxValue,
         minValue,
+        midValue
       });
     }
   }, [isVisible]);

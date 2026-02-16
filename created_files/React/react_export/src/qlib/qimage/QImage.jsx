@@ -31,6 +31,7 @@ const QImage = ({
   isRevarsed,
   maxValue,
   minValue,
+  midValue,
   overflow = "",
   zIndex,
   tailwaindClasses,
@@ -87,7 +88,8 @@ const QImage = ({
         isRevarsed,
         animationDuration,
         maxValue,
-        minValue
+        minValue,
+        midValue
       });
     }
   }, [isVisible]);

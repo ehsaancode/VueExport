@@ -27,6 +27,9 @@ const QFullWidth = ({
   animationCurve,
   animationTargetPosition,
   isRevarsed,
+  maxValue,
+  minValue,
+  midValue,
 
   zIndex,
   tailwaindClasses,
@@ -70,6 +73,9 @@ const QFullWidth = ({
         animationDelay,
         animationDuration,
         isRevarsed,
+        maxValue,
+        minValue,
+        midValue,
       });
     }
   }, [isVisible]);

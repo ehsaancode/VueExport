@@ -30,6 +30,9 @@ const QParagraph = ({
   animationTargetPosition,
   isRevarsed,
   overflow = "",
+  maxValue,
+  minValue,
+  midValue,
   zIndex,
   Pagination,
   tailwaindClasses,
@@ -84,6 +87,9 @@ const QParagraph = ({
         animationDelay,
         animationDuration,
         isRevarsed,
+        maxValue,
+        minValue,
+        midValue,
       });
     }
 

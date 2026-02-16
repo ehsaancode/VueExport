@@ -30,6 +30,9 @@ const QSection = ({
   isImageFill,
   overflow = "",
   zIndex,
+  maxValue,
+  minValue,
+  midValue,
 
   widthType,
   heightType,
@@ -142,6 +145,9 @@ const QSection = ({
       onClick,
       zIndex,
       boxShadow,
+      maxValue,
+      minValue,
+      midValue,
     }),
     ...(foreground
       ? {

@@ -74,6 +74,9 @@ const QTableWrapper = ({
   animationTargetPosition,
   isRevarsed,
   overflow,
+  maxValue,
+  minValue,
+  midValue,
   zIndex
 }) => {
   const tableWrapperRef = useRef(null);
@@ -121,6 +124,9 @@ const QTableWrapper = ({
           animationDelay,
           isRevarsed,
           animationDuration,
+          maxValue,
+          minValue,
+          midValue,
         });
       }
     }, [isVisible]);

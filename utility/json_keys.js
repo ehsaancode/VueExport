@@ -2,6 +2,8 @@ class JsonKeys {
   //added scale animations
   static maxValue = "maxValue";
   static minValue = "minValue";
+  static midValue = "midValue";
+
   static durationUnit = "durationUnit";
   static delayUnit = "delayUnit";
 

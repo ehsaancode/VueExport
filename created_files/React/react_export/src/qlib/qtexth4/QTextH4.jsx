@@ -30,6 +30,7 @@ const QTextH4 = ({
   isRevarsed,
   maxValue,
   minValue,
+  midValue,
   overflow = "",
   zIndex,
   tailwaindClasses,
@@ -82,11 +83,10 @@ const QTextH4 = ({
         animationIterations,
         animationDelay,
         isRevarsed,
-        maxValue,
-        minValue,
         animationDuration,
         maxValue,
         minValue,
+        midValue
       });
     }
   }, [isVisible]);
