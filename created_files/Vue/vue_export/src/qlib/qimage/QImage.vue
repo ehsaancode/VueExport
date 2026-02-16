@@ -29,6 +29,7 @@ const props = defineProps({
   isRevarsed: String,
   maxValue: String,
   minValue: String,
+  midValue: String,
   overflow: { type: String, default: "" },
   zIndex: String,
   tailwaindClasses: { type: String, default: "" },
@@ -84,6 +85,7 @@ watch(isVisible, (val) => {
       animationDuration: props.animationDuration,
       maxValue: props.maxValue,
       minValue: props.minValue,
+      midValue: props.midValue,
     });
   }
 });

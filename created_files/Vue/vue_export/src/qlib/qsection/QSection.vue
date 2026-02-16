@@ -71,6 +71,9 @@ const props = defineProps({
   boxShadow: String,
   foreground: String,
   style: Object,
+  maxValue: String,
+  minValue: String,
+  midValue: String,
 });
 
 const router = useRouter();
@@ -132,6 +135,9 @@ const containerStyle = computed(() => {
     onClick: props.onClick,
     zIndex: props.zIndex,
     boxShadow: props.boxShadow,
+    maxValue: props.maxValue,
+    minValue: props.minValue,
+    midValue: props.midValue,
   });
 
   const foregroundStyle = props.foreground

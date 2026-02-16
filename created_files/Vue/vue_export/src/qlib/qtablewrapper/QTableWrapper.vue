@@ -75,6 +75,9 @@ const props = defineProps({
   isRevarsed: String,
   overflow: String,
   zIndex: [String, Number],
+  maxValue: String,
+  minValue: String,
+  midValue: String,
 });
 
 const tableWrapperRef = ref(null);
@@ -119,6 +122,9 @@ watch(isVisible, (newVal) => {
       animationDelay: props.animationDelay,
       isRevarsed: props.isRevarsed,
       animationDuration: props.animationDuration,
+      maxValue: props.maxValue,
+      minValue: props.minValue,
+      midValue: props.midValue,
     });
   }
 });

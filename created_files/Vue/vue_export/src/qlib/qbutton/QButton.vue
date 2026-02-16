@@ -27,6 +27,7 @@ const props = defineProps({
   // Animation Props
   maxValue: String,
   minValue: String,
+  midValue: String,
   isAnimationP: String,
   animationEasing: String,
   animationDirection: String,
@@ -92,6 +93,7 @@ watch(isVisible, (val) => {
       animationDuration: props.animationDuration,
       maxValue: props.maxValue,
       minValue: props.minValue,
+      midValue: props.midValue,
     });
   }
 });

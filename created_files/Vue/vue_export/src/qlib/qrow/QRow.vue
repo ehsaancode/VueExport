@@ -33,6 +33,9 @@ const props = defineProps({
   boxShadow: String,
   textShadow: String,
   style: Object,
+  maxValue: String,
+  minValue: String,
+  midValue: String,
 });
 
 const router = useRouter();
@@ -71,6 +74,9 @@ watch(isVisible, (val) => {
       animationDelay: props.animationDelay,
       animationDuration: props.animationDuration,
       isRevarsed: props.isRevarsed,
+      maxValue: props.maxValue,
+      minValue: props.minValue,
+      midValue: props.midValue,
     });
   }
 });

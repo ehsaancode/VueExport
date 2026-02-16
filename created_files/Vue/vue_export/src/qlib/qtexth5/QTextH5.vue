@@ -38,6 +38,7 @@ const props = defineProps({
   isRevarsed: String,
   maxValue: String,
   minValue: String,
+  midValue: String,
   overflow: String,
   zIndex: [String, Number],
   tailwaindClasses: {
@@ -94,6 +95,7 @@ watch(isVisible, async (val) => {
           isRevarsed: props.isRevarsed,
           maxValue: props.maxValue,
           minValue: props.minValue,
+          midValue: props.midValue,
         });
         classes.value = textRef.value.className;
     }

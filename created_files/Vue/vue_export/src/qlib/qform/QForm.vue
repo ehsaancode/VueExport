@@ -47,6 +47,9 @@ const props = defineProps({
   // But standard Vue form submit is @submit.
   // The react code takes an onSubmit prop.
   onSubmit: Function,
+  maxValue: String,
+  minValue: String,
+  midValue: String,
 });
 
 const emit = defineEmits(["submit"]);
@@ -90,6 +93,9 @@ watch(isVisible, async (val) => {
       animationDelay: props.animationDelay,
       animationDuration: props.animationDuration,
       isRevarsed: props.isRevarsed,
+      maxValue: props.maxValue,
+      minValue: props.minValue,
+      midValue: props.midValue,
     });
 
     classes.value = formRef.value.className;

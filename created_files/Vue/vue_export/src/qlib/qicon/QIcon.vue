@@ -32,6 +32,7 @@ const props = defineProps({
   isRevarsed: [Boolean, String],
   maxValue: [String, Number],
   minValue: [String, Number],
+  midValue: [String, Number],
   shadowOffsetX: [String, Number],
   shadowOffsetY: [String, Number],
   shadowBlurRadius: [String, Number],
@@ -129,6 +130,7 @@ const runAnimationShim = () => {
       isRevarsed: props.isRevarsed,
       maxValue: props.maxValue,
       minValue: props.minValue,
+      midValue: props.midValue,
     });
   }
 };
