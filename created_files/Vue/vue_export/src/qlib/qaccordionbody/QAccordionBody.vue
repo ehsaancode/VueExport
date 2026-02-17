@@ -1,23 +1,9 @@
 <template>
-  <div class="q-component-stub QAccordionBody">
-    QAccordionBody (Stub)
-    <slot></slot>
-  </div>
+  <slot></slot>
 </template>
 
 <script setup>
-// Stub component for QAccordionBody
-const props = defineProps({
-  tailwaindClasses: String,
-  widgetId: String,
-  // Accept any other props loosely
+defineOptions({
+  name: "QAccordionBody",
 });
 </script>
-
-<style scoped>
-.q-component-stub {
-  border: 1px dashed red;
-  padding: 4px;
-  color: red;
-}
-</style>
