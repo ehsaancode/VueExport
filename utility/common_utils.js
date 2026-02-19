@@ -339,6 +339,8 @@ function hexToRgba(hex) {
 function removeTransparencyFromHexCode(hexCode) {
   // Ensure the hex code starts with '#' and has 9 characters (including #)
   // console.log(`*************** hexCode: ${hexCode}`);
+  if (!hexCode || typeof hexCode !== "string") return hexCode;
+  
   if (!hexCode.startsWith("#") || hexCode.length !== 9) {
     return hexCode;
   } else {
